@@ -1,4 +1,5 @@
-﻿using Joueur_Server.ViewModels;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,17 +11,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Joueur_Server
+namespace Joueur_Server.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainMenuPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainMenuPage : UserControl
     {
-        public MainWindow()
+        public MainMenuPage()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
         }
     }
 }
