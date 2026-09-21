@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Joueur_Client/Joueur_Client.csproj" Id="ff8656a9-86c8-4edb-ad3d-9bd585853892" />
   <Project Path="Joueur_Server/Joueur_Server.csproj" />
 </Solution>
