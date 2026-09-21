@@ -42,6 +42,7 @@ namespace Joueur_Server.ViewModels
             IsHosting = true;
             await _server.StartListening();
             // Once connected Redirect toward configuration page
+
         }
     }
 }

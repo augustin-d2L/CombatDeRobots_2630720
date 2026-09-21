@@ -7,7 +7,7 @@ namespace Joueur_Server.ViewModels
 {
     internal class MainViewModel : BaseViewModel
     {
-        public Server Server { get; set; }
+        private readonly Server _server;
 
         private BaseViewModel _currentPage;
 
@@ -19,9 +19,14 @@ namespace Joueur_Server.ViewModels
 
         public MainViewModel()
         {
-            Server = new Server();
+            _server = new Server();
 
-            _currentPage = new MainMenuViewModel(Server);
+            _currentPage = new MainMenuViewModel(_server);
+        }
+
+        private void NavigateToConfiguration()
+        {
+            //TODO
         }
     }
 }
