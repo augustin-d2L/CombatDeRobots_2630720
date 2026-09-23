@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Joueur_Server.Models;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Joueur_Server.Service
 {
     internal class Server
     {
+        private Socket _socket;
         private readonly Socket _listener;
 
         public string LocalIp { get; }
@@ -24,31 +26,41 @@ namespace Joueur_Server.Service
             Port = ((IPEndPoint)_listener.LocalEndPoint).Port;
         }
 
-        public async Task StartListening()
+        public async Task SendData()
         {
-            Socket handler = await _listener.AcceptAsync();
+            // accepte la connexion et la conserve dans le champ de classe
+            _socket = await _listener.AcceptAsync();
 
             const string eom = "<|EOM|>";
+            var buffer = new byte[1_024];
 
-            while (true)
+            // recois un message
+            int received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
+
+            // extrait le message
+            string response = Encoding.UTF8.GetString(buffer, 0, received);
+
+            if (response.IndexOf(eom) > -1)
             {
-                var buffer = new byte[1_024];
-                int received = await handler.ReceiveAsync(buffer, SocketFlags.None);
-                string response = Encoding.UTF8.GetString(buffer, 0, received);
+                Console.WriteLine($"Message reçu : \"{response.Replace(eom, "")}\"");
 
-                if (response.IndexOf(eom) > -1)
-                {
-                    Console.WriteLine($"Message reçu : \"{response.Replace(eom, "")}\"");
+                // encode le message de retour
+                string ackMessage = "<|ACK|>";
+                byte[] echoBytes = Encoding.UTF8.GetBytes(ackMessage);
 
-                    string ackMessage = "<|ACK|>";
-                    byte[] echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                    await handler.SendAsync(echoBytes, SocketFlags.None);
+                // envoie le message de retour
+                await _socket.SendAsync(echoBytes, SocketFlags.None);
 
-                    Console.WriteLine($"Accusé de réception envoyé : \"{ackMessage}\"");
-                    break;
-                }
+                Console.WriteLine($"Accusé de réception envoyé : \"{ackMessage}\"");
             }
         }
+
+        public async Task SendData(Data? data = null)
+        {
+
+        }
+
+        //receiveData
 
         private string GetLocalIpAddress()
         {

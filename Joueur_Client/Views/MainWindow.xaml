@@ -15,6 +15,9 @@
         <DataTemplate DataType="{x:Type vm:MainMenuViewModel}">
             <views:MainMenuPage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
+            <views:ConfigurationPage />
+        </DataTemplate>
     </Window.Resources>
 
     <ContentControl Content="{Binding CurrentPage}" />

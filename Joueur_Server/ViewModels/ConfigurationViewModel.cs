@@ -1,16 +1,112 @@
-﻿using Joueur_Server.Service;
+﻿using Joueur_Server.Common;
+using Joueur_Server.Helpers;
+using Joueur_Server.Models;
+using Joueur_Server.Service;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    internal class ConfigurationViewModel
+    //adapter valeur pt config
+    internal class ConfigurationViewModel : BaseViewModel
     {
         private readonly Server _server;
+
+        private string _robotName = string.Empty;
+        public string RobotName
+        {
+            get => _robotName;
+            set
+            {
+                if (SetProperty(ref _robotName, value))
+                {
+                    (ConfirmCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private int _hpPoints;
+        public int HpPoints { get => _hpPoints; private set => SetProperty(ref _hpPoints, value); }
+
+        private int _armorPoints;
+        public int ArmorPoints { get => _armorPoints; private set => SetProperty(ref _armorPoints, value); }
+
+        private int _damagePoints;
+        public int DamagePoints { get => _damagePoints; private set => SetProperty(ref _damagePoints, value); }
+
+        public int RemainingPoints => GameConstants.HABILITY_POINTS - (HpPoints + ArmorPoints + DamagePoints);
+
+        public int PreviewHealthPoints => GameConstants.BASE_HEALTH_POINTS + HpPoints * GameConstants.HEALTH_MULTIPLIER;
+        public int PreviewArmor => GameConstants.BASE_ARMOR + ArmorPoints * GameConstants.DEFENSE_MULTIPLIER;
+        public int PreviewDamage => GameConstants.BASE_DAMAGE + DamagePoints * GameConstants.DAMAGE_MULTIPLIER;
+
+        private Robot? _currentRobot;
+        public Robot? CurrentRobot { get => _currentRobot; private set => SetProperty(ref _currentRobot, value); }
+
+        public ICommand IncrementCommand { get; }
+        public ICommand DecrementCommand { get; }
+        public ICommand ConfirmCommand { get; }
         public ConfigurationViewModel(Server server)
         {
             _server = server;
+
+            IncrementCommand = new RelayCommand(Increment, CanIncrement);
+            DecrementCommand = new RelayCommand(Decrement, CanDecrement);
+            ConfirmCommand = new RelayCommand(Confirm, CanConfirm);
+        }
+
+        private void Increment(object? statName)
+        {
+            switch (statName as string)
+            {
+                case "Hp": HpPoints++; break;
+                case "Armor": ArmorPoints++; break;
+                case "Damage": DamagePoints++; break;
+            }
+            NotifierChangementAllocation();
+        }
+
+        private void Decrement(object? statName)
+        {
+            switch (statName as string)
+            {
+                case "Hp": if (HpPoints > 0) HpPoints--; break;
+                case "Armor": if (ArmorPoints > 0) ArmorPoints--; break;
+                case "Damage": if (DamagePoints > 0) DamagePoints--; break;
+            }
+            NotifierChangementAllocation();
+        }
+
+        private bool CanIncrement(object? _) => RemainingPoints > 0;
+
+        private bool CanDecrement(object? statName) => (statName as string) switch
+        {
+            "Hp" => HpPoints > 0,
+            "Armor" => ArmorPoints > 0,
+            "Damage" => DamagePoints > 0,
+            _ => false
+        };
+
+        private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0;
+
+        private void Confirm(object? _)
+        {
+            var robot = new Robot(RobotName);
+            robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
+            CurrentRobot = robot;
+        }
+
+        private void NotifierChangementAllocation()
+        {
+            OnPropertyChanged(nameof(RemainingPoints));
+            OnPropertyChanged(nameof(PreviewHealthPoints));
+            OnPropertyChanged(nameof(PreviewArmor));
+            OnPropertyChanged(nameof(PreviewDamage));
+            (IncrementCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (DecrementCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (ConfirmCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

@@ -27,10 +27,12 @@ namespace Joueur_Server.ViewModels
         }
 
         public ICommand HostGameCommand { get; }
+        public Action NavigateToConfiguration { get; }
 
-        public MainMenuViewModel(Server server)
+        public MainMenuViewModel(Server server, Action navigateToConfiguration)
         {
             _server = server;
+            NavigateToConfiguration = navigateToConfiguration;
             LocalIp = server.LocalIp;
             Port = server.Port;
 
@@ -40,9 +42,8 @@ namespace Joueur_Server.ViewModels
         private async void HostGame()
         {
             IsHosting = true;
-            await _server.StartListening();
-            // Once connected Redirect toward configuration page
-
+            await _server.SendData();
+            NavigateToConfiguration();
         }
     }
 }

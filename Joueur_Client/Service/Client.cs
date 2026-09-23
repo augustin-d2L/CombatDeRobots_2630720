@@ -8,44 +8,43 @@ namespace Joueur_Client.Service
 {
     internal class Client
     {
-        private readonly Socket _socket;
-        public IPAddress Ip { get; }
-        public int Port { get; }
+        private Socket _socket;
+        public IPAddress Ip { get; set; }
+        public int Port { get; set; }
 
-        public Client(int port, IPAddress ip)
+        public Client()
+        {
+        }
+
+        public async Task<bool> SendData(int port, IPAddress ip)
         {
             Ip = ip;
             Port = port;
 
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        }
 
-        public async Task Connect()
-        {
+
+            // Établit la connexion TCP vers le serveur (IP + port donnés à la construction)
             await _socket.ConnectAsync(new IPEndPoint(Ip, Port));
 
-            while (true)
-            {
-                // Send message.
-                var message = "Hi friends 👋!<|EOM|>";
-                var messageBytes = Encoding.UTF8.GetBytes(message);
-                _ = await _socket.SendAsync(messageBytes, SocketFlags.None);
-                Console.WriteLine($"Socket client sent message: \"{message}\"");
+            // Prépare le message de confirmation de connexion
+            var message = "CONNECTED !<|EOM|>";
+            var messageBytes = Encoding.UTF8.GetBytes(message); // texte → octets, seul format que le socket accepte
 
-                // Receive ack.
-                var buffer = new byte[1_024];
-                var received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
-                var response = Encoding.UTF8.GetString(buffer, 0, received);
-                if (response == "<|ACK|>")
-                {
-                    Console.WriteLine(
-                        $"Socket client received acknowledgment: \"{response}\"");
-                    break;
-                }
-                // Sample output:
-                //     Socket client sent message: "Hi friends 👋!<|EOM|>"
-                //     Socket client received acknowledgment: "<|ACK|>"
-            }
+            // Envoie le message au serveur
+            await _socket.SendAsync(messageBytes, SocketFlags.None);
+
+            // Attend la réponse du serveur (l'accusé de réception)
+            var buffer = new byte[1_024]; // zone mémoire pour recevoir les octets
+            int received = await _socket.ReceiveAsync(buffer, SocketFlags.None); // combien d'octets reçus
+            string response = Encoding.UTF8.GetString(buffer, 0, received); // octets reçus → texte
+
+            // Si le serveur confirme bien la réception, la connexion est validée
+            return response == "<|ACK|>";
         }
+
+        //public async Task SendData(Data? data = null)
+
+        //receiveData
     }
 }

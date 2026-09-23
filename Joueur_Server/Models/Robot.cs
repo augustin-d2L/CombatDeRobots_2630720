@@ -70,11 +70,11 @@ namespace Joueur_Server.Models
 
         public void ConfigureRobot(int hp, int armor, int damage)
 		{
-			if (hp + armor + damage != 10)
-				throw new ArgumentException("Robot Must have 10 modification points");
-			HealthPoints += hp * 10;//10 could be in constants as HP_MULITPLIER
-			Armor += armor * 2;
-			Damage += damage * 2;
+			if (hp + armor + damage != GameConstants.HABILITY_POINTS)
+				throw new ArgumentException("Robot Must have spend the exact amount of hability points modification points");
+			HealthPoints += hp * GameConstants.HEALTH_MULTIPLIER;
+			Armor += armor * GameConstants.DEFENSE_MULTIPLIER;
+			Damage += damage * GameConstants.DAMAGE_MULTIPLIER;
 		}
 
 		public void TakeDamage(int damage)

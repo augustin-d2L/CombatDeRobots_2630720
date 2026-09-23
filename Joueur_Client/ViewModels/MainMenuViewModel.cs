@@ -11,7 +11,7 @@ namespace Joueur_Client.ViewModels
 {
     internal class MainMenuViewModel : BaseViewModel
     {
-        private Client _client;
+        private readonly Client _client;
 
         private bool _isConnecting;
 
@@ -46,9 +46,12 @@ namespace Joueur_Client.ViewModels
 
 
         public ICommand ConnectToGameCommand { get; }
+        public Action NavigateToConfiguration { get; }
 
-        public MainMenuViewModel()
+        public MainMenuViewModel(Client client,Action navigateToConfiguration)
         {
+            _client = client;   
+            NavigateToConfiguration = navigateToConfiguration;
             ConnectToGameCommand = new RelayCommand(ConnectToGame, () => !IsConnecting);
         }
 
@@ -56,10 +59,10 @@ namespace Joueur_Client.ViewModels
         {
             IPAddress ip = IPAddress.Parse(IpInput);
             int port = int.Parse(PortInput);
-            _client = new(port, ip);
 
             IsConnecting = true;
-            await _client.Connect();
+            if (await _client.SendData(port, ip))
+                NavigateToConfiguration();
         }
     }
 }

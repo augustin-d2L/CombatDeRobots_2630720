@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Joueur_Client.Service;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -7,7 +8,7 @@ namespace Joueur_Client.ViewModels
 {
     internal class MainViewModel : BaseViewModel
     {
-
+        private readonly Client _client;
         private BaseViewModel _currentPage;
 
         public BaseViewModel CurrentPage
@@ -18,7 +19,14 @@ namespace Joueur_Client.ViewModels
 
         public MainViewModel()
         {
-            _currentPage = new MainMenuViewModel();
+            _client = new Client();
+
+            _currentPage = new MainMenuViewModel(_client, NavigateToConfiguration);
+        }
+
+        private void NavigateToConfiguration()
+        {
+            CurrentPage = new ConfigurationViewModel(_client);
         }
     }
 }

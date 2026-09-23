@@ -21,12 +21,12 @@ namespace Joueur_Server.ViewModels
         {
             _server = new Server();
 
-            _currentPage = new MainMenuViewModel(_server);
+            CurrentPage = new MainMenuViewModel(_server, NavigateToConfiguration);
         }
 
         private void NavigateToConfiguration()
         {
-            //TODO
+            CurrentPage = new ConfigurationViewModel(_server);
         }
     }
 }
