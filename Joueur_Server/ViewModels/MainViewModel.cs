@@ -1,4 +1,5 @@
-﻿using Joueur_Server.Service;
+﻿using Joueur_Server.Models;
+using Joueur_Server.Service;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,7 +27,12 @@ namespace Joueur_Server.ViewModels
 
         private void NavigateToConfiguration()
         {
-            CurrentPage = new ConfigurationViewModel(_server);
+            CurrentPage = new ConfigurationViewModel(_server, NavigateToGame);
+        }
+
+        private void NavigateToGame(Robot robotServer, Robot robotClient)
+        {
+            CurrentPage = new GameViewModel(_server, robotServer, robotClient);
         }
     }
 }

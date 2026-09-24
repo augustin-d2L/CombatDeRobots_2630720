@@ -19,6 +19,9 @@
         <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
             <views:ConfigurationPage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:GameViewModel}">
+            <views:GamePage />
+        </DataTemplate>
     </Window.Resources>
     
     <!--Content control shows automatically the right page 

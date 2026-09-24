@@ -1,10 +1,10 @@
-﻿using Joueur_Server.Common.Enums;
+﻿using Joueur_Client.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace Joueur_Server.Models
+namespace Joueur_Client.Models
 {
     internal class Data
     {
@@ -27,14 +27,14 @@ namespace Joueur_Server.Models
         public bool PlayerIsValid { get; set; }
 
         public Data(
-            Robot robotServer, 
+            Robot robotServer,
             Robot robotClient,
             string gameState,
-            bool playAgain, 
+            bool playAgain,
             Robot winner,
-            string message, 
+            string message,
             bool serverIsReady,
-            bool playerIsValid, 
+            bool playerIsValid,
             ActionCombat? action)
         {
             RobotClient = robotClient;

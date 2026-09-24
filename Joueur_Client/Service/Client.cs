@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Joueur_Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -43,8 +44,37 @@ namespace Joueur_Client.Service
             return response == "<|ACK|>";
         }
 
-        //public async Task SendData(Data? data = null)
+        public async Task SendData(Data? data = null)
+        {
+            const string eom = "<|EOM|>";
 
-        //receiveData
+            if (data != null)
+            {
+                string dataString = data.ToJson() + eom;
+                byte[] echoBytes = Encoding.UTF8.GetBytes(dataString);
+
+                await _socket.SendAsync(echoBytes, SocketFlags.None);
+            }
+        }
+
+        public async Task<Data> ReceiveData()
+        {
+            const string eom = "<|EOM|>";
+            var buffer = new byte[1_024];
+            string accumulatedResponse = "";
+
+            while (true)
+            {
+                int received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
+                accumulatedResponse += Encoding.UTF8.GetString(buffer, 0, received);
+
+                int eomIndex = accumulatedResponse.IndexOf(eom);
+                if (eomIndex > -1)
+                {
+                    string jsonPart = accumulatedResponse.Substring(0, eomIndex);
+                    return Data.FromJson(jsonPart);
+                }
+            }
+        }
     }
 }

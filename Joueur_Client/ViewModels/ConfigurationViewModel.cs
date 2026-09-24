@@ -13,6 +13,7 @@ namespace Joueur_Client.ViewModels
     internal class ConfigurationViewModel : BaseViewModel
     {
         private readonly Client _client;
+        private readonly Action<Robot, Robot> _onBothReady;
 
         private string _robotName = "";
         public string RobotName
@@ -61,9 +62,10 @@ namespace Joueur_Client.ViewModels
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmCommand { get; }
 
-        public ConfigurationViewModel(Client client)
+        public ConfigurationViewModel(Client client, Action<Robot, Robot> onBothReady)
         {
             _client = client;
+            _onBothReady = onBothReady;
 
             IncrementCommand = new RelayCommand(Increment, CanIncrement);
             DecrementCommand = new RelayCommand(Decrement, CanDecrement);
@@ -102,7 +104,7 @@ namespace Joueur_Client.ViewModels
         };
 
         private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0 && !IsReady;
-        private void Confirm(object? _)
+        private async void Confirm(object? _)
         {
             IsReady = true;
             var robot = new Robot(RobotName);
@@ -110,9 +112,23 @@ namespace Joueur_Client.ViewModels
             CurrentRobot = robot;
             //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
             //1 receiveData ServerIsReady;
+            await _client.ReceiveData();
+
             //2 sendData RobotClient
+            await _client.SendData(new Data { RobotClient = robot });
+
             //3 attendre le retour de config et si y'a un problème on avise
-            //4 naviguer à la page de combat
+            //4 naviguer à la page de combat si player is valid
+            Data serverData = await _client.ReceiveData();
+
+            if (serverData.PlayerIsValid)
+            {
+                _onBothReady(serverData.RobotServer, robot);
+            }
+            else
+            {
+                throw new ArgumentException("Impossible de démarrer la partie.");//a changer
+            }
         }
 
         private void NotifierChangementAllocation()

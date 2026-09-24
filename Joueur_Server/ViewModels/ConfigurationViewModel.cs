@@ -12,6 +12,7 @@ namespace Joueur_Server.ViewModels
     internal class ConfigurationViewModel : BaseViewModel
     {
         private readonly Server _server;
+        private readonly Action<Robot, Robot> _onBothReady;
 
         private string _robotName = "";
         public string RobotName
@@ -60,9 +61,10 @@ namespace Joueur_Server.ViewModels
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmCommand { get; }
 
-        public ConfigurationViewModel(Server server)
+        public ConfigurationViewModel(Server server, Action<Robot, Robot> onBothReady)
         {
             _server = server;
+            _onBothReady = onBothReady;
 
             IncrementCommand = new RelayCommand(Increment, CanIncrement);
             DecrementCommand = new RelayCommand(Decrement, CanDecrement);
@@ -101,17 +103,40 @@ namespace Joueur_Server.ViewModels
         };
 
         private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0 && !IsReady;
-        private void Confirm(object? _)
+        private async void Confirm(object? _)
         {
             IsReady = true;
             var robot = new Robot(RobotName);
             robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
             CurrentRobot = robot;
-            //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
+            //robot est pret donc envoie de DATA vide avec ServerIsReady = True
             //1 sendData ServerIsReady = True;
+            await _server.SendData(new Data { ServerIsReady = true });
+
             //2 receuiveData RobotClient
+            Data clientData = await _server.ReceiveData();
+            Robot robotClient = clientData.RobotClient;
+
             //3 on verifie les config si y'a un problème on avise
+            bool isValid = true;//TODO modifier ça
+            /* verifier config robot dans gameService */
+
+            await _server.SendData(new Data
+            {
+                RobotClient = robotClient,
+                RobotServer = robot,
+                PlayerIsValid = isValid,
+            });
+
             //4 naviguer à la page de combat
+            if (isValid)
+            {
+                _onBothReady(robot, robotClient);
+            }
+            else
+            {
+                throw new ArgumentException("Impossible de démarrer la partie.");//a changer
+            }
         }
 
         private void NotifierChangementAllocation()
