@@ -6,8 +6,8 @@ namespace Joueur_Client.Common.Enums
 {
     public enum ActionCombat
     {
-        ATTAQUE,
-        ATTAQUE_PUISSANTE,
+        ATTACK,
+        POWERFUL_ATTACK,
         DEFENSE,
         RECHARGE
     }

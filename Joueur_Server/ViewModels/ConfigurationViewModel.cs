@@ -48,18 +48,18 @@ namespace Joueur_Server.ViewModels
         private int _damagePoints;
         public int DamagePoints { get => _damagePoints; private set => SetProperty(ref _damagePoints, value); }
 
-        public int RemainingPoints => GameConstants.HABILITY_POINTS - (HpPoints + ArmorPoints + DamagePoints);
+        private Robot? _currentRobot;
+        public Robot? CurrentRobot { get => _currentRobot; private set => SetProperty(ref _currentRobot, value); }
 
+        public int RemainingPoints => GameConstants.HABILITY_POINTS - (HpPoints + ArmorPoints + DamagePoints);
         public int PreviewHealthPoints => GameConstants.BASE_HEALTH_POINTS + HpPoints * GameConstants.HEALTH_MULTIPLIER;
         public int PreviewArmor => GameConstants.BASE_ARMOR + ArmorPoints * GameConstants.DEFENSE_MULTIPLIER;
         public int PreviewDamage => GameConstants.BASE_DAMAGE + DamagePoints * GameConstants.DAMAGE_MULTIPLIER;
 
-        private Robot? _currentRobot;
-        public Robot? CurrentRobot { get => _currentRobot; private set => SetProperty(ref _currentRobot, value); }
-
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmCommand { get; }
+
         public ConfigurationViewModel(Server server)
         {
             _server = server;
@@ -92,7 +92,6 @@ namespace Joueur_Server.ViewModels
         }
 
         private bool CanIncrement(object? _) => RemainingPoints > 0 && !IsReady;
-
         private bool CanDecrement(object? statName) => !IsReady && (statName as string) switch
         {
             "Hp" => HpPoints > 0,
@@ -102,13 +101,17 @@ namespace Joueur_Server.ViewModels
         };
 
         private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0 && !IsReady;
-
         private void Confirm(object? _)
         {
             IsReady = true;
             var robot = new Robot(RobotName);
             robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
             CurrentRobot = robot;
+            //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
+            //1 sendData ServerIsReady = True;
+            //2 receuiveData RobotClient
+            //3 on verifie les config si y'a un problème on avise
+            //4 naviguer à la page de combat
         }
 
         private void NotifierChangementAllocation()

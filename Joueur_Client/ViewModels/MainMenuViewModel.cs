@@ -48,7 +48,7 @@ namespace Joueur_Client.ViewModels
         public ICommand ConnectToGameCommand { get; }
         public Action NavigateToConfiguration { get; }
 
-        public MainMenuViewModel(Client client,Action navigateToConfiguration)
+        public MainMenuViewModel(Client client, Action navigateToConfiguration)
         {
             _client = client;   
             NavigateToConfiguration = navigateToConfiguration;

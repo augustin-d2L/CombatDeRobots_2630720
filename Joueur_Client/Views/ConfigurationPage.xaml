@@ -7,6 +7,44 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="configuration" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="2*"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Personnalisez votre robot" FontSize="60" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="Nom :" />
+            <TextBox Margin="0 0 0 10" Text="{Binding RobotName, UpdateSourceTrigger=PropertyChanged}"/>
+            <WrapPanel Width="210">
+                <TextBlock Width="60" Height="40"  Margin="0 0 10 0" Text="Vie"/>
+                <TextBlock Width="60" Height="40"  Margin="0 0 10 0" Text="Armure"/>
+                <TextBlock Width="60" Height="40"  Margin="0 0 10 0" Text="Attaque"/>
+
+                <Button Content="+" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding IncrementCommand}" CommandParameter="Hp"/>
+                <Button Content="+" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding IncrementCommand}" CommandParameter="Armor"/>
+                <Button Content="+" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding IncrementCommand}" CommandParameter="Damage"/>
+
+                <Button Content="-" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding DecrementCommand}" CommandParameter="Hp"/>
+                <Button Content="-" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding DecrementCommand}" CommandParameter="Armor"/>
+                <Button Content="-" Width="60" Height="40"  Margin="0 0 10 0" Command="{Binding DecrementCommand}" CommandParameter="Damage"/>
+                <TextBlock Text="{Binding RemainingPoints, StringFormat='Points restants : {0}'}" Margin="0 10 0 0" />
+            </WrapPanel>
+            <Button Content="Confirmer" Width="150" Height="40" Margin="0 20 0 0" Command="{Binding ConfirmCommand}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <TextBlock Text="Votre Robot :" FontSize="25" />
+            <TextBlock Text="{Binding RobotName, StringFormat='Nom : {0}'}"/>
+            <TextBlock Text="{Binding PreviewHealthPoints, StringFormat='Points de vies : {0}'}"/>
+            <TextBlock Text="{Binding PreviewArmor, StringFormat='Points d armures : {0}'}"/>
+            <TextBlock Text="{Binding PreviewDamage, StringFormat='Points de dégats : {0}'}"/>
+        </StackPanel>
     </Grid>
 </UserControl>
