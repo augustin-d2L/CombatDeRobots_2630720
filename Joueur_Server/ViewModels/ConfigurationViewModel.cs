@@ -9,18 +9,30 @@ using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    //adapter valeur pt config
     internal class ConfigurationViewModel : BaseViewModel
     {
         private readonly Server _server;
 
-        private string _robotName = string.Empty;
+        private string _robotName = "";
         public string RobotName
         {
             get => _robotName;
             set
             {
                 if (SetProperty(ref _robotName, value))
+                {
+                    (ConfirmCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private bool _isReady;
+        public bool IsReady
+        {
+            get => _isReady;
+            set
+            {
+                if (SetProperty(ref _isReady, value))
                 {
                     (ConfirmCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
@@ -79,9 +91,9 @@ namespace Joueur_Server.ViewModels
             NotifierChangementAllocation();
         }
 
-        private bool CanIncrement(object? _) => RemainingPoints > 0;
+        private bool CanIncrement(object? _) => RemainingPoints > 0 && !IsReady;
 
-        private bool CanDecrement(object? statName) => (statName as string) switch
+        private bool CanDecrement(object? statName) => !IsReady && (statName as string) switch
         {
             "Hp" => HpPoints > 0,
             "Armor" => ArmorPoints > 0,
@@ -89,10 +101,11 @@ namespace Joueur_Server.ViewModels
             _ => false
         };
 
-        private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0;
+        private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0 && !IsReady;
 
         private void Confirm(object? _)
         {
+            IsReady = true;
             var robot = new Robot(RobotName);
             robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
             CurrentRobot = robot;

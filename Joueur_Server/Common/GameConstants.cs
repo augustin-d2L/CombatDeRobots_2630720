@@ -15,6 +15,6 @@ namespace Joueur_Server.Common
         public const int DEFENSE_MULTIPLIER = 2;
         public const int ENERGY_MULTIPLIER = 2;
         public const int DAMAGE_MULTIPLIER = 2;
-        public const int HEALTH_MULTIPLIER = 2;
+        public const int HEALTH_MULTIPLIER = 10;
     }
 }
