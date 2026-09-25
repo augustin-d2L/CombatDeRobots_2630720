@@ -44,16 +44,12 @@ namespace Joueur_Server.Service
 
             if (response.IndexOf(eom) > -1)
             {
-                Console.WriteLine($"Message reçu : \"{response.Replace(eom, "")}\"");
-
                 // encode le message de retour
-                string ackMessage = "<|ACK|>";
+                string ackMessage = "<|EOM|>";
                 byte[] echoBytes = Encoding.UTF8.GetBytes(ackMessage);
 
                 // envoie le message de retour
                 await _socket.SendAsync(echoBytes, SocketFlags.None);
-
-                Console.WriteLine($"Accusé de réception envoyé : \"{ackMessage}\"");
             }
         }
 

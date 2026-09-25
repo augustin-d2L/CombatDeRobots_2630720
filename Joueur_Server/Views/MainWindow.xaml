@@ -22,6 +22,9 @@
         <DataTemplate DataType="{x:Type vm:GameViewModel}">
             <views:GamePage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EndGameViewModel}">
+            <views:EndGamePage />
+        </DataTemplate>
     </Window.Resources>
     
     <!--Content control shows automatically the right page 

@@ -77,11 +77,14 @@ namespace Joueur_Client.ViewModels
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
-        public GameViewModel(Client client, Robot robotServer, Robot robotClient)
+        public System.Action<Data> NavigateToEndGame { get; }
+
+        public GameViewModel(Client client, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame)
         {
             _client = client;
             _robotServer = robotServer;
             _robotClient = robotClient;
+            NavigateToEndGame = navigateToEndGame;
 
             IsTurnToPlay = true;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
@@ -102,7 +105,13 @@ namespace Joueur_Client.ViewModels
 
             //Recevoir l'action 
             LastVersionData = await _client.ReceiveData();
-            
+
+            if (LastVersionData.Winner != null)
+            {
+                //fim de partie
+                NavigateToEndGame(LastVersionData);
+            }
+
             _robotClient = LastVersionData.RobotClient;
             _robotServer = LastVersionData.RobotServer;
 
@@ -114,6 +123,13 @@ namespace Joueur_Client.ViewModels
         private async Task ListenToOpponent()
         {
             LastVersionData = await _client.ReceiveData();
+
+            if(LastVersionData.Winner != null)
+            {
+                //fim de partie
+                LastVersionData.RobotClient.Name = "FIN";
+            }
+
             _robotClient = LastVersionData.RobotClient;
             _robotServer = LastVersionData.RobotServer;
             IsTurnToPlay = true;
@@ -127,11 +143,13 @@ namespace Joueur_Client.ViewModels
 
         private void UpdateDisplay()
         {
+            OnPropertyChanged(nameof(RobotName));
             OnPropertyChanged(nameof(HealthPoints));
             OnPropertyChanged(nameof(Armor));
             OnPropertyChanged(nameof(Damage));
             OnPropertyChanged(nameof(Energy));
             OnPropertyChanged(nameof(DefenseBonus));
+            OnPropertyChanged(nameof(EnnemyRobotName));
             OnPropertyChanged(nameof(EnnemyHealthPoints));
             OnPropertyChanged(nameof(EnnemyArmor));
             OnPropertyChanged(nameof(EnnemyDamage));

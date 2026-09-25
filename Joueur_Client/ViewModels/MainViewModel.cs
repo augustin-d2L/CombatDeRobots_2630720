@@ -32,7 +32,12 @@ namespace Joueur_Client.ViewModels
 
         private void NavigateToGame(Robot robotServer, Robot robotClient)
         {
-            CurrentPage = new GameViewModel(_client, robotServer, robotClient);
+            CurrentPage = new GameViewModel(_client, robotServer, robotClient, NavigateToEndGame);
+        }
+
+        private void NavigateToEndGame(Data data)
+        {
+            CurrentPage = new EndGameViewModel(_client, data);
         }
     }
 }

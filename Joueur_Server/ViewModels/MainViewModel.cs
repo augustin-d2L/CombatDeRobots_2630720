@@ -9,7 +9,6 @@ namespace Joueur_Server.ViewModels
     internal class MainViewModel : BaseViewModel
     {
         private readonly Server _server;
-
         private BaseViewModel _currentPage;
 
         public BaseViewModel CurrentPage
@@ -32,7 +31,12 @@ namespace Joueur_Server.ViewModels
 
         private void NavigateToGame(Robot robotServer, Robot robotClient)
         {
-            CurrentPage = new GameViewModel(_server, robotServer, robotClient);
+            CurrentPage = new GameViewModel(_server, robotServer, robotClient, NavigateToEndGame);
+        }
+
+        private void NavigateToEndGame(Data data)
+        {
+            CurrentPage = new EndGameViewModel(_server, data);
         }
     }
 }

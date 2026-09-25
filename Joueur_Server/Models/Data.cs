@@ -18,7 +18,7 @@ namespace Joueur_Server.Models
 
         public bool PlayAgain { get; set; }
 
-        public Robot Winner { get; set; }
+        public string Winner { get; set; }
 
         public string Message { get; set; }
 
@@ -31,7 +31,7 @@ namespace Joueur_Server.Models
             Robot robotClient,
             string gameState,
             bool playAgain, 
-            Robot winner,
+            string winner,
             string message, 
             bool serverIsReady,
             bool playerIsValid, 

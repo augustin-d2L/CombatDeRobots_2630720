@@ -8,9 +8,29 @@ namespace Joueur_Server.Service
 {
     internal class GameService : IServiceGame
     {
-        public bool PerformTurn(Data data)
+        public bool PerformTurn(Data data, bool serverTurn)
         {
-            return false;
+            ActionCombat? action = data.Action;
+            Robot player;
+            Robot opponent;
+
+            if (serverTurn)
+            {
+                player = data.RobotServer;
+                opponent = data.RobotClient;
+            }
+            else
+            {
+                player = data.RobotClient;
+                opponent = data.RobotServer;
+            }
+            data.Message = OperateAction(action, player, opponent);
+            if (opponent.HealthPoints <= 0)
+            {
+                data.Winner = player.Name;
+                return false;
+            }
+            return true;
         }
 
         public string OperateAction(ActionCombat? action, Robot player, Robot opponent)
