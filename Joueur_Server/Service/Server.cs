@@ -1,4 +1,5 @@
-﻿using Joueur_Server.Models;
+﻿using Joueur_Server.Common;
+using Joueur_Server.Models;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -33,7 +34,6 @@ namespace Joueur_Server.Service
             // accepte la connexion et la conserve dans le champ de classe
             _socket = await _listener.AcceptAsync();
 
-            const string eom = "<|EOM|>";
             var buffer = new byte[1_024];
 
             // recois un message
@@ -42,7 +42,7 @@ namespace Joueur_Server.Service
             // extrait le message
             string response = Encoding.UTF8.GetString(buffer, 0, received);
 
-            if (response.IndexOf(eom) > -1)
+            if (response.IndexOf(GameConstants.EOM_DELIMITER) > -1)
             {
                 // encode le message de retour
                 string ackMessage = "<|EOM|>";
@@ -55,11 +55,10 @@ namespace Joueur_Server.Service
 
         public async Task SendData(Data? data = null)
         {
-            const string eom = "<|EOM|>";
 
             if ( data != null )
             {
-                string dataString = data.ToJson() + eom;
+                string dataString = data.ToJson() + GameConstants.EOM_DELIMITER;
                 byte[] echoBytes = Encoding.UTF8.GetBytes(dataString);
 
                 await _socket.SendAsync(echoBytes, SocketFlags.None);
@@ -68,7 +67,6 @@ namespace Joueur_Server.Service
 
         public async Task<Data> ReceiveData()
         {
-            const string eom = "<|EOM|>";
             var buffer = new byte[1_024];
             string accumulatedResponse = "";
 
@@ -77,7 +75,7 @@ namespace Joueur_Server.Service
                 int received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
                 accumulatedResponse += Encoding.UTF8.GetString(buffer, 0, received);
 
-                int eomIndex = accumulatedResponse.IndexOf(eom);
+                int eomIndex = accumulatedResponse.IndexOf(GameConstants.EOM_DELIMITER);
                 if (eomIndex > -1)
                 {
                     string jsonPart = accumulatedResponse.Substring(0, eomIndex);
