@@ -13,6 +13,8 @@ namespace Joueur_Client.ViewModels
     {
         private readonly Client _client;
 
+        public string Message => LastVersionData.Message;
+
         private bool _isRestarting;
 
         public bool IsRestarting

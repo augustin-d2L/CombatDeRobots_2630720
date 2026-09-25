@@ -118,7 +118,7 @@ namespace Joueur_Server.ViewModels
             Robot robotClient = clientData.RobotClient;
 
             //3 on verifie les config si y'a un problème on avise
-            bool isValid = true;//TODO modifier ça
+            bool isValid = _server.Service.DataValidation(robotClient);
             /* verifier config robot dans gameService */
 
             await _server.SendData(new Data

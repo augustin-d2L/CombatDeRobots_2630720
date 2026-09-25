@@ -10,6 +10,8 @@ namespace Joueur_Server.ViewModels
     {
         private readonly Server _server;
 
+        public string Message => LastVersionData.Message;
+
         public Data LastVersionData { get; set; }
 
         public System.Action NavigateToConfiguration { get; }

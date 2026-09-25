@@ -74,6 +74,9 @@ namespace Joueur_Client.ViewModels
         public int EnnemyEnergy => _robotServer.Energy;
         public int EnnemyDefenseBonus => _robotServer.DefenseBonus;
 
+        // Message
+        public string Message => LastVersionData.Message;
+
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
@@ -163,6 +166,8 @@ namespace Joueur_Client.ViewModels
             OnPropertyChanged(nameof(EnnemyDamage));
             OnPropertyChanged(nameof(EnnemyEnergy));
             OnPropertyChanged(nameof(EnnemyDefenseBonus));
+
+            OnPropertyChanged(nameof(Message));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Joueur_Server.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace Joueur_Server.Models
 
         public override void Execute(Robot player, Robot opponent)
         {
-            player.DefenseBonus += 1;
+            player.DefenseBonus += GameConstants.ADD_BONUS;
         }
     }
 }

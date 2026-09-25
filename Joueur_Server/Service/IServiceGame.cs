@@ -8,7 +8,7 @@ namespace Joueur_Server.Service
 {
     internal interface IServiceGame
     {
-        //bool DataValidation(Robot sanitisation); //validation du robot
+        bool DataValidation(Robot robot); //validation du robot
         string OperateAction(ActionCombat? action, Robot player, Robot opponent);
 
         public Models.Action Attack { get; set; }
