@@ -115,6 +115,7 @@ namespace Joueur_Client.ViewModels
             await _client.ReceiveData();
 
             //2 sendData RobotClient
+            //TODO : ajouter la validation if server is ready
             await _client.SendData(new Data { RobotClient = robot });
 
             //3 attendre le retour de config et si y'a un problème on avise
