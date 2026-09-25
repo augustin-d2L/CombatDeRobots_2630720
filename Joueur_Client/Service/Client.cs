@@ -24,7 +24,6 @@ namespace Joueur_Client.Service
 
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-
             // Établit la connexion TCP vers le serveur (IP + port donnés à la construction)
             await _socket.ConnectAsync(new IPEndPoint(Ip, Port));
 
@@ -75,6 +74,11 @@ namespace Joueur_Client.Service
                     return Data.FromJson(jsonPart);
                 }
             }
+        }
+
+        public async void CloseConnection()
+        {
+            _socket.Close();
         }
     }
 }

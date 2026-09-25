@@ -117,7 +117,15 @@ namespace Joueur_Client.ViewModels
 
             IsTurnToPlay = false;
             UpdateDisplay();
-            _ = ListenToOpponent();
+
+            if (LastVersionData.Winner != null)
+            {
+                NavigateToEndGame(LastVersionData);
+            }
+            else
+            {
+                _ = ListenToOpponent();
+            }
         }
 
         private async Task ListenToOpponent()

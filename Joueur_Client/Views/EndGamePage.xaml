@@ -7,6 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="fin de partie" />
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="fin de partie" />
+            <Button Content="Recommencer" Width="140" Height="40" Command="{Binding RestartGameCommand, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Quitter" Width="140" Height="40" Command="{Binding QuitGameCommand, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

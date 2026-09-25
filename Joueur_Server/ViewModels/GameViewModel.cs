@@ -101,11 +101,8 @@ namespace Joueur_Server.ViewModels
 
             //traitement de l'action
             LastVersionData.Action = action;
-            if (!_server.Service.PerformTurn(LastVersionData, IsTurnToPlay))
-            {
-                //fin de partie serveur gagne
-                NavigateToEndGame(LastVersionData);
-            }
+
+            bool gameInProgress = _server.Service.PerformTurn(LastVersionData, IsTurnToPlay);
 
             //envois de l'action faite au client
             await _server.SendData(LastVersionData);
@@ -115,7 +112,9 @@ namespace Joueur_Server.ViewModels
             _robotServer = LastVersionData.RobotServer;
             IsTurnToPlay = false;
             UpdateDisplay();
-            _ = ListenToOpponent();
+
+            if (gameInProgress) _ = ListenToOpponent();
+            else NavigateToEndGame(LastVersionData);
         }
 
         private async Task ListenToOpponent()
@@ -124,11 +123,7 @@ namespace Joueur_Server.ViewModels
             LastVersionData = await _server.ReceiveData();
 
             //traitement de l'action
-            if(!_server.Service.PerformTurn(LastVersionData, IsTurnToPlay))
-            {
-                //fin de partie server perd
-                NavigateToEndGame(LastVersionData);
-            }
+            bool gameInProgress = _server.Service.PerformTurn(LastVersionData, IsTurnToPlay);
 
             //retour avec l'action faite
             await _server.SendData(LastVersionData);
@@ -138,6 +133,7 @@ namespace Joueur_Server.ViewModels
             _robotServer = LastVersionData.RobotServer;
             IsTurnToPlay = true;
             UpdateDisplay();
+            if (!gameInProgress) NavigateToEndGame(LastVersionData);
         }
 
         private void SelectAction(object? actionName)

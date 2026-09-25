@@ -86,6 +86,11 @@ namespace Joueur_Server.Service
             }
         }
 
+        public async void CloseConnection()
+        {
+            _socket.Close();
+        }
+
         private string GetLocalIpAddress()
         {
             using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))

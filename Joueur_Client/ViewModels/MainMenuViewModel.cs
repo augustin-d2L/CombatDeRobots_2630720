@@ -43,9 +43,8 @@ namespace Joueur_Client.ViewModels
             set { _portInput = value; }
         }
 
-
-
         public ICommand ConnectToGameCommand { get; }
+
         public Action NavigateToConfiguration { get; }
 
         public MainMenuViewModel(Client client, Action navigateToConfiguration)

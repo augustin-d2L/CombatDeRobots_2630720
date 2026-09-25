@@ -37,7 +37,12 @@ namespace Joueur_Client.ViewModels
 
         private void NavigateToEndGame(Data data)
         {
-            CurrentPage = new EndGameViewModel(_client, data);
+            CurrentPage = new EndGameViewModel(_client, data, NavigateToConfiguration, NavigateToMainMenu);
+        }
+
+        private void NavigateToMainMenu()
+        {
+            CurrentPage = new MainMenuViewModel(_client, NavigateToConfiguration);
         }
     }
 }

@@ -36,7 +36,12 @@ namespace Joueur_Server.ViewModels
 
         private void NavigateToEndGame(Data data)
         {
-            CurrentPage = new EndGameViewModel(_server, data);
+            CurrentPage = new EndGameViewModel(_server, data, NavigateToConfiguration, NavigateToMainMenu);
+        }
+
+        private void NavigateToMainMenu()
+        {
+            CurrentPage = new MainMenuViewModel(_server, NavigateToConfiguration);
         }
     }
 }
