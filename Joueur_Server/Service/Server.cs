@@ -12,12 +12,14 @@ namespace Joueur_Server.Service
         private Socket _socket;
         private readonly Socket _listener;
 
+        public GameService Service { get; set; }
         public string LocalIp { get; }
         public int Port { get; }
 
         public Server()
         {
             LocalIp = GetLocalIpAddress();
+            Service = new GameService();
 
             _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _listener.Bind(new IPEndPoint(IPAddress.Any, 0));

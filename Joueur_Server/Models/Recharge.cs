@@ -10,7 +10,7 @@ namespace Joueur_Server.Models
 
         public override void Execute(Robot player, Robot opponent)
         {
-            player.DefenseBonus += 1;
+            player.Energy += 1;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Joueur_Server.Service
     internal interface IServiceGame
     {
         //bool DataValidation(char sanitisation);
-        string OperateAction(ActionCombat action);
+        string OperateAction(ActionCombat? action, Robot player, Robot opponent);
 
         public Models.Action Attack { get; set; }
         public Models.Action PowerfulAttack { get; set; }

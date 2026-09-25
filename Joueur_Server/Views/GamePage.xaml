@@ -21,11 +21,11 @@
             <TextBlock Text="Page de Jeu" FontSize="60" />
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1">
-            <Button Content="Attaquer" Width="120" Height="40" Margin="0 10 0 0" />
-            <Button Content="Attaque Puissante" Width="120" Height="40" Margin="0 10 0 0" />
-            <Button Content="Défense" Width="120" Height="40" Margin="0 10 0 0" />
-            <Button Content="Recharge" Width="120" Height="40" Margin="0 10 0 0" />
-            <Button Content="Confirmer" Width="150" Height="40" Margin="0 20 0 0" Command="{Binding ConfirmCommand}" IsEnabled="{Binding IsTurnToPlay}"/>
+            <RadioButton Content="Attaquer" GroupName="ChosenAction" Command="{Binding SelectActionCommand}" CommandParameter="ATTACK" Width="150" Height="40" Margin="0 10 0 0"/>
+            <RadioButton Content="Attaque Puissante" GroupName="ChosenAction" Command="{Binding SelectActionCommand}" CommandParameter="POWERFUL_ATTACK" Width="150" Height="40" Margin="0 10 0 0"/>
+            <RadioButton Content="Défense" GroupName="ChosenAction" Command="{Binding SelectActionCommand}" CommandParameter="DEFENSE" Width="150" Height="40" Margin="0 10 0 0"/>
+            <RadioButton Content="Recharge" GroupName="ChosenAction" Command="{Binding SelectActionCommand}" CommandParameter="RECHARGE" Width="150" Height="40" Margin="0 10 0 0"/>
+            <Button Content="Confirmer" Width="150" Height="40" Margin="0 20 0 0" Command="{Binding PlayTurnCommand}"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock Text="Ennemi :" FontSize="25" />
@@ -33,6 +33,8 @@
             <TextBlock Text="{Binding EnnemyHealthPoints, StringFormat='Points de vies : {0}'}"/>
             <TextBlock Text="{Binding EnnemyArmor, StringFormat='Points d armures : {0}'}"/>
             <TextBlock Text="{Binding EnnemyDamage, StringFormat='Points de dégats : {0}'}"/>
+            <TextBlock Text="{Binding EnnemyEnergy, StringFormat='Points d energie : {0}'}" />
+            <TextBlock Text="{Binding EnnemyDefenseBonus, StringFormat='Point de defense bonus : {0}'}" />
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock Text="Vous :" FontSize="25" />
@@ -40,6 +42,8 @@
             <TextBlock Text="{Binding HealthPoints, StringFormat='Points de vies : {0}'}"/>
             <TextBlock Text="{Binding Armor, StringFormat='Points d armures : {0}'}"/>
             <TextBlock Text="{Binding Damage, StringFormat='Points de dégats : {0}'}"/>
+            <TextBlock Text="{Binding Energy, StringFormat='Points d energie : {0}'}" />
+            <TextBlock Text="{Binding DefenseBonus, StringFormat='Point de defense bonus : {0}'}" />
         </StackPanel>
     </Grid>
 </UserControl>

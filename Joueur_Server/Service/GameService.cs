@@ -13,9 +13,28 @@ namespace Joueur_Server.Service
             return false;
         }
 
-        public string OperateAction(ActionCombat action)
+        public string OperateAction(ActionCombat? action, Robot player, Robot opponent)
         {
-            return null;
+            string message = "";
+            switch (action)
+            {
+                case ActionCombat.ATTACK:
+                    Attack.Execute(player, opponent);
+                    break;
+                case ActionCombat.POWERFUL_ATTACK:
+                    PowerfulAttack.Execute(player, opponent);
+                    break;
+                case ActionCombat.DEFENSE:
+                    Defense.Execute(player, opponent);
+                    break;
+                case ActionCombat.RECHARGE:
+                    Recharge.Execute(player, opponent);
+                    break;
+                default:
+                    message = "Action is not known";
+                    break;
+            }
+            return message;
         }
 
         public Models.Action Attack { get; set; }
