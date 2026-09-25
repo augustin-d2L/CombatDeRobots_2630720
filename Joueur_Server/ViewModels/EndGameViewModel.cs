@@ -2,6 +2,7 @@
 using Joueur_Server.Service;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 namespace Joueur_Server.ViewModels
@@ -15,10 +16,10 @@ namespace Joueur_Server.ViewModels
         public Data LastVersionData { get; set; }
 
         public System.Action NavigateToConfiguration { get; }
-        public System.Action NavigateToMainMenu { get; }
+        public System.Action<string> NavigateToMainMenu { get; }
 
 
-        public EndGameViewModel(Server server, Data data, System.Action navigateToConfiguration, System.Action navigateToMainMenu)
+        public EndGameViewModel(Server server, Data data, System.Action navigateToConfiguration, System.Action<string> navigateToMainMenu)
         {
             _server = server;
             LastVersionData = data;
@@ -30,15 +31,21 @@ namespace Joueur_Server.ViewModels
 
         private async Task ListenToClientChoice()
         {
-            LastVersionData = await _server.ReceiveData();
-
-            if (LastVersionData.PlayAgain)
-                NavigateToConfiguration();
-            if (!LastVersionData.PlayAgain)
+            try
             {
-                _server.CloseConnection();
-                NavigateToMainMenu();
+                if (LastVersionData.PlayAgain)
+                    NavigateToConfiguration();
+                if (!LastVersionData.PlayAgain)
+                {
+                    _server.CloseConnection();
+                    NavigateToMainMenu("");
+                }
             }
+            catch (SocketException)
+            {
+                NavigateToMainMenu("Connexion perdue avec le client");
+            }
+            LastVersionData = await _server.ReceiveData();
         }
     }
 }

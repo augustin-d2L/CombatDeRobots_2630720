@@ -128,7 +128,7 @@ namespace Joueur_Client.ViewModels
             }
             else
             {
-                throw new ArgumentException("Impossible de démarrer la partie.");//a changer
+                IsReady = false;
             }
         }
 

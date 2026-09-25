@@ -13,7 +13,9 @@ namespace Joueur_Server.Models
 
         public override void Execute(Robot player, Robot opponent)
         {
-            opponent.HealthPoints -= (player.Damage + (player.Energy * damageMultiplier) - (opponent.Armor + opponent.DefenseBonus));
+            int damage = (player.Damage + (player.Energy * damageMultiplier) - (opponent.Armor + opponent.DefenseBonus)) > 0 
+                ? (player.Damage + (player.Energy * damageMultiplier) - (opponent.Armor + opponent.DefenseBonus)) : 0;
+            opponent.HealthPoints -= damage;
             opponent.DefenseBonus = 0;
             player.Energy = 0;
         }

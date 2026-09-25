@@ -13,7 +13,8 @@
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="Host a game" Command="{Binding HostGameCommand}" Width="150" Height="40"/>
+                <Button Content="Héberger une partie" Command="{Binding HostGameCommand}" Width="150" Height="40"/>
+                <TextBlock Text="{Binding Message}" Margin="0 10 0 0" />
             </StackPanel>
         </Grid>
     </UserControl.Content>

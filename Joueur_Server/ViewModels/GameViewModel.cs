@@ -4,6 +4,7 @@ using Joueur_Server.Models;
 using Joueur_Server.Service;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows.Input;
 
@@ -24,20 +25,7 @@ namespace Joueur_Server.ViewModels
             {
                 if (SetProperty(ref _isTurnToPlay, value))
                 {
-                }
-            }
-        }
-
-        private bool _choseAction;
-
-        public bool ChoseAction
-        {
-            get { return _choseAction; }
-            set
-            {
-                if (SetProperty(ref _choseAction, value))
-                {
-                    (PlayTurnCommand as RelayCommand)?.RaiseCanExecuteChanged(); //TODO : j'essaie de dire que quand une action est choisie le bouton se grise
+                    (PlayTurnCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -74,19 +62,23 @@ namespace Joueur_Server.ViewModels
         public int EnnemyDefenseBonus => _robotClient.DefenseBonus;
 
         // Message
-        public string Message => LastVersionData.Message;
+        public string Message => LastVersionData?.Message ?? "";
 
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
         public System.Action<Data> NavigateToEndGame { get; }
+        private readonly System.Action<string?> _navigateToMainMenu;
 
-        public GameViewModel(Server server, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame)
+
+        public GameViewModel(Server server, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu)
         {
             _server = server;
             _robotServer = robotServer;
             _robotClient = robotClient;
             NavigateToEndGame = navigateToEndGame;
+            _navigateToMainMenu = navigateToMainMenu;
+
 
             IsTurnToPlay = false;
 
@@ -96,47 +88,64 @@ namespace Joueur_Server.ViewModels
             _ = ListenToOpponent();
         }
 
-        private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null && !ChoseAction;
+        private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;
         private async void PlayTurn(object? _)
         {
-            ActionCombat action;
-            Enum.TryParse<ActionCombat>(SelectedAction, out action);
+            try
+            {
+                IsTurnToPlay = false;
 
-            //traitement de l'action
-            LastVersionData.Action = action;
+                ActionCombat action;
+                Enum.TryParse<ActionCombat>(SelectedAction, out action);
 
-            bool gameInProgress = _server.Service.PerformTurn(LastVersionData, IsTurnToPlay);
+                //traitement de l'action
+                LastVersionData.Action = action;
 
-            //envois de l'action faite au client
-            await _server.SendData(LastVersionData);
+                bool gameInProgress = _server.Service.PerformTurn(LastVersionData, true);
 
-            //mise a jour display et retour en attente
-            _robotClient = LastVersionData.RobotClient;
-            _robotServer = LastVersionData.RobotServer;
-            IsTurnToPlay = false;
-            UpdateDisplay();
+                //envois de l'action faite au client
+                await _server.SendData(LastVersionData);
 
-            if (gameInProgress) _ = ListenToOpponent();
-            else NavigateToEndGame(LastVersionData);
+                //mise a jour display et retour en attente
+                _robotClient = LastVersionData.RobotClient;
+                _robotServer = LastVersionData.RobotServer;
+                UpdateDisplay();
+
+                if (gameInProgress) _ = ListenToOpponent();
+                else NavigateToEndGame(LastVersionData);
+            }
+            catch (SocketException)
+            {
+                _navigateToMainMenu("Connexion perdue avec le client");
+            }
         }
 
         private async Task ListenToOpponent()
         {
-            //attendre l'action
-            LastVersionData = await _server.ReceiveData();
+            try
+            {
+                //attendre l'action
+                LastVersionData = await _server.ReceiveData();
 
-            //traitement de l'action
-            bool gameInProgress = _server.Service.PerformTurn(LastVersionData, IsTurnToPlay);
+                //traitement de l'action
+                bool gameInProgress = _server.Service.PerformTurn(LastVersionData, false);
 
-            //retour avec l'action faite
-            await _server.SendData(LastVersionData);
+                //retour avec l'action faite
+                await _server.SendData(LastVersionData);
 
-            //update display
-            _robotClient = LastVersionData.RobotClient;
-            _robotServer = LastVersionData.RobotServer;
-            IsTurnToPlay = true;
-            UpdateDisplay();
-            if (!gameInProgress) NavigateToEndGame(LastVersionData);
+                //update display
+                _robotClient = LastVersionData.RobotClient;
+                _robotServer = LastVersionData.RobotServer;
+
+                IsTurnToPlay = true;
+
+                UpdateDisplay();
+                if (!gameInProgress) NavigateToEndGame(LastVersionData);
+            }
+            catch (SocketException)
+            {
+                _navigateToMainMenu("Connexion perdue avec le client");
+            }
         }
 
         private void SelectAction(object? actionName)

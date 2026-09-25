@@ -13,6 +13,7 @@ namespace Joueur_Server.ViewModels
 
         public string LocalIp { get; }
         public int Port { get; }
+        public string Message { get; }
         private bool _isHosting;
         public bool IsHosting
         {
@@ -29,12 +30,13 @@ namespace Joueur_Server.ViewModels
         public ICommand HostGameCommand { get; }
         public Action NavigateToConfiguration { get; }
 
-        public MainMenuViewModel(Server server, Action navigateToConfiguration)
+        public MainMenuViewModel(Server server, Action navigateToConfiguration, string? message = "")
         {
             _server = server;
             NavigateToConfiguration = navigateToConfiguration;
             LocalIp = server.LocalIp;
             Port = server.Port;
+            Message = message;
 
             HostGameCommand = new RelayCommand(HostGame, () => !IsHosting);
         }

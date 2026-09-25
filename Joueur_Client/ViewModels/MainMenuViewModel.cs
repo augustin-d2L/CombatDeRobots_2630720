@@ -3,6 +3,7 @@ using Joueur_Client.Service;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -28,19 +29,17 @@ namespace Joueur_Client.ViewModels
         }
 
         private string _ipInput;
-
         public string IpInput
         {
-            get { return _ipInput; }
-            set { _ipInput = value; }
+            get => _ipInput;
+            set => SetProperty(ref _ipInput, value);
         }
 
         private string _portInput;
-
         public string PortInput
         {
-            get { return _portInput; }
-            set { _portInput = value; }
+            get => _portInput;
+            set => SetProperty(ref _portInput, value);
         }
 
         public ICommand ConnectToGameCommand { get; }
@@ -56,12 +55,32 @@ namespace Joueur_Client.ViewModels
 
         private async void ConnectToGame()
         {
-            IPAddress ip = IPAddress.Parse(IpInput);
-            int port = int.Parse(PortInput);
+            try
+            {
+                bool inputIsCorrect = true;
+                if (!IPAddress.TryParse(IpInput, out IPAddress? ip))
+                {
+                    IpInput = "0.0.0.0";
+                    inputIsCorrect = false;
+                }
 
-            IsConnecting = true;
-            if (await _client.SendData(port, ip))
-                NavigateToConfiguration();
+                if (!int.TryParse(PortInput, out int port))
+                {
+                    PortInput = "0";
+                    inputIsCorrect = false;
+                }
+
+                if (inputIsCorrect)
+                {
+                    IsConnecting = true;
+                    await _client.SendData(port, ip);
+                    NavigateToConfiguration();
+                }
+            }
+            catch (SocketException)
+            {
+                IsConnecting = false;
+            }
         }
     }
 }
