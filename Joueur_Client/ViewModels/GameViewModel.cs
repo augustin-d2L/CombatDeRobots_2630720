@@ -138,7 +138,7 @@ namespace Joueur_Client.ViewModels
             if(LastVersionData.Winner != null)
             {
                 //fim de partie
-                LastVersionData.RobotClient.Name = "FIN";
+                NavigateToEndGame(LastVersionData);
             }
 
             _robotClient = LastVersionData.RobotClient;
