@@ -27,12 +27,12 @@ namespace Joueur_Client.ViewModels
 
         private void NavigateToConfiguration()
         {
-            CurrentPage = new ConfigurationViewModel(_client, NavigateToGame);
+            CurrentPage = new ConfigurationViewModel(_client, NavigateToGame, NavigateToMainMenu);
         }
 
         private void NavigateToGame(Robot robotServer, Robot robotClient)
         {
-            CurrentPage = new GameViewModel(_client, robotServer, robotClient, NavigateToEndGame);
+            CurrentPage = new GameViewModel(_client, robotServer, robotClient, NavigateToEndGame, NavigateToMainMenu);
         }
 
         private void NavigateToEndGame(Data data)
@@ -40,9 +40,9 @@ namespace Joueur_Client.ViewModels
             CurrentPage = new EndGameViewModel(_client, data, NavigateToConfiguration, NavigateToMainMenu);
         }
 
-        private void NavigateToMainMenu()
+        private void NavigateToMainMenu(string? msg = null)
         {
-            CurrentPage = new MainMenuViewModel(_client, NavigateToConfiguration);
+            CurrentPage = new MainMenuViewModel(_client, NavigateToConfiguration, msg);
         }
     }
 }

@@ -16,5 +16,8 @@ namespace Joueur_Client.Common
         public const int ENERGY_MULTIPLIER = 2;
         public const int DAMAGE_MULTIPLIER = 2;
         public const int HEALTH_MULTIPLIER = 10;
+        public const int ADD_BONUS = 5;
+        public const int ADD_ENERGY = 5;
+        public const string EOM_DELIMITER = "<|EOM|>";
     }
 }

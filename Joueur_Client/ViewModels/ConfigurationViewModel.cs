@@ -4,6 +4,7 @@ using Joueur_Client.Models;
 using Joueur_Client.Service;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -62,10 +63,14 @@ namespace Joueur_Client.ViewModels
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmCommand { get; }
 
-        public ConfigurationViewModel(Client client, Action<Robot, Robot> onBothReady)
+        private readonly Action<string?> _navigateToMainMenu;
+
+        public ConfigurationViewModel(Client client, Action<Robot, Robot> onBothReady, Action<string> navigateToMainMenu)
         {
             _client = client;
+
             _onBothReady = onBothReady;
+            _navigateToMainMenu = navigateToMainMenu;
 
             IncrementCommand = new RelayCommand(Increment, CanIncrement);
             DecrementCommand = new RelayCommand(Decrement, CanDecrement);
@@ -106,29 +111,37 @@ namespace Joueur_Client.ViewModels
         private bool CanConfirm(object? _) => !string.IsNullOrWhiteSpace(RobotName) && RemainingPoints == 0 && !IsReady;
         private async void Confirm(object? _)
         {
-            IsReady = true;
-            var robot = new Robot(RobotName);
-            robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
-            CurrentRobot = robot;
-            //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
-            //1 receiveData ServerIsReady;
-            await _client.ReceiveData();
-
-            //2 sendData RobotClient
-            //TODO : ajouter la validation if server is ready
-            await _client.SendData(new Data { RobotClient = robot });
-
-            //3 attendre le retour de config et si y'a un problème on avise
-            //4 naviguer à la page de combat si player is valid
-            Data serverData = await _client.ReceiveData();
-
-            if (serverData.PlayerIsValid)
+            try
             {
-                _onBothReady(serverData.RobotServer, robot);
+                IsReady = true;
+                var robot = new Robot(RobotName);
+                robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
+                CurrentRobot = robot;
+                //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
+                //1 receiveData ServerIsReady;
+                await _client.ReceiveData();
+
+                //2 sendData RobotClient
+                //TODO : ajouter la validation if server is ready
+                await _client.SendData(new Data { RobotClient = robot });
+
+                //3 attendre le retour de config et si y'a un problème on avise
+                //4 naviguer à la page de combat si player is valid
+                Data serverData = await _client.ReceiveData();
+
+                if (serverData.PlayerIsValid)
+                {
+                    _onBothReady(serverData.RobotServer, robot);
+                }
+                else
+                {
+                    IsReady = false;
+                }
             }
-            else
+            catch (SocketException)
             {
-                IsReady = false;
+                _navigateToMainMenu("Connexion perdue avec le serveur");
+
             }
         }
 

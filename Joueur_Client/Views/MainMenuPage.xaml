@@ -13,6 +13,7 @@
             <TextBlock Text="Port :" />
             <TextBox Width="300" Text="{Binding PortInput, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Content="Search Game" Command="{Binding ConnectToGameCommand, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Message}" Margin="0 10 0 0" />
         </StackPanel>
     </Grid>
 </UserControl>

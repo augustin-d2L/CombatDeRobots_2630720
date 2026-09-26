@@ -4,6 +4,7 @@ using Joueur_Client.Models;
 using Joueur_Client.Service;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -75,19 +76,22 @@ namespace Joueur_Client.ViewModels
         public int EnnemyDefenseBonus => _robotServer.DefenseBonus;
 
         // Message
-        public string Message => LastVersionData.Message;
+        public string Message => LastVersionData?.Message ?? "";
 
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
         public System.Action<Data> NavigateToEndGame { get; }
+        private readonly System.Action<string?> _navigateToMainMenu;
 
-        public GameViewModel(Client client, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame)
+
+        public GameViewModel(Client client, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu)
         {
             _client = client;
             _robotServer = robotServer;
             _robotClient = robotClient;
             NavigateToEndGame = navigateToEndGame;
+            _navigateToMainMenu = navigateToMainMenu;
 
             IsTurnToPlay = true;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
@@ -99,52 +103,66 @@ namespace Joueur_Client.ViewModels
         private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null && !ChoseAction;
         private async void PlayTurn(object? _)
         {
-            ActionCombat action;
-            Enum.TryParse<ActionCombat>(SelectedAction, out action);
-
-            //Envoyer à l'autre l'action
-            LastVersionData.Action = action;
-            await _client.SendData(LastVersionData);//TODO il faut mettre un message pour l,afficher au client et dire au server ce qui c'est passé
-
-            //Recevoir l'action 
-            LastVersionData = await _client.ReceiveData();
-
-            if (LastVersionData.Winner != null)
+            try
             {
-                //fim de partie
-                NavigateToEndGame(LastVersionData);
+                ActionCombat action;
+                Enum.TryParse<ActionCombat>(SelectedAction, out action);
+
+                //Envoyer à l'autre l'action
+                LastVersionData.Action = action;
+                await _client.SendData(LastVersionData);//TODO il faut mettre un message pour l,afficher au client et dire au server ce qui c'est passé
+
+                //Recevoir l'action 
+                LastVersionData = await _client.ReceiveData();
+
+                if (LastVersionData.Winner != null)
+                {
+                    //fim de partie
+                    NavigateToEndGame(LastVersionData);
+                }
+
+                _robotClient = LastVersionData.RobotClient;
+                _robotServer = LastVersionData.RobotServer;
+
+                IsTurnToPlay = false;
+                UpdateDisplay();
+
+                if (LastVersionData.Winner != null)
+                {
+                    NavigateToEndGame(LastVersionData);
+                }
+                else
+                {
+                    _ = ListenToOpponent();
+                }
             }
-
-            _robotClient = LastVersionData.RobotClient;
-            _robotServer = LastVersionData.RobotServer;
-
-            IsTurnToPlay = false;
-            UpdateDisplay();
-
-            if (LastVersionData.Winner != null)
+            catch (SocketException)
             {
-                NavigateToEndGame(LastVersionData);
-            }
-            else
-            {
-                _ = ListenToOpponent();
+                _navigateToMainMenu("Connexion perdue avec le serveur");
             }
         }
 
         private async Task ListenToOpponent()
         {
-            LastVersionData = await _client.ReceiveData();
-
-            if(LastVersionData.Winner != null)
+            try
             {
-                //fim de partie
-                NavigateToEndGame(LastVersionData);
-            }
+                LastVersionData = await _client.ReceiveData();
 
-            _robotClient = LastVersionData.RobotClient;
-            _robotServer = LastVersionData.RobotServer;
-            IsTurnToPlay = true;
-            UpdateDisplay();
+                if (LastVersionData.Winner != null)
+                {
+                    //fim de partie
+                    NavigateToEndGame(LastVersionData);
+                }
+
+                _robotClient = LastVersionData.RobotClient;
+                _robotServer = LastVersionData.RobotServer;
+                IsTurnToPlay = true;
+                UpdateDisplay();
+            }
+            catch (SocketException)
+            {
+                _navigateToMainMenu("Connexion perdue avec le serveur");
+            }
         }
 
         private void SelectAction(object? actionName)

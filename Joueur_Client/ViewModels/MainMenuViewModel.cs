@@ -14,6 +14,8 @@ namespace Joueur_Client.ViewModels
     {
         private readonly Client _client;
 
+        public string Message { get; }
+
         private bool _isConnecting;
 
         public bool IsConnecting
@@ -46,9 +48,10 @@ namespace Joueur_Client.ViewModels
 
         public Action NavigateToConfiguration { get; }
 
-        public MainMenuViewModel(Client client, Action navigateToConfiguration)
+        public MainMenuViewModel(Client client, Action navigateToConfiguration, string? message = "")
         {
-            _client = client;   
+            _client = client;
+            Message = message;
             NavigateToConfiguration = navigateToConfiguration;
             ConnectToGameCommand = new RelayCommand(ConnectToGame, () => !IsConnecting);
         }

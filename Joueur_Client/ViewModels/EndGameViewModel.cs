@@ -3,6 +3,7 @@ using Joueur_Client.Models;
 using Joueur_Client.Service;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -48,9 +49,9 @@ namespace Joueur_Client.ViewModels
         public ICommand QuitGameCommand { get; }
 
         public Action NavigateToConfiguration { get; }
-        public Action NavigateToMainMenu { get; }
+        public Action<string> NavigateToMainMenu { get; }
 
-        public EndGameViewModel(Client client, Data data, Action navigateToConfiguration, Action navigateToMainMenu)
+        public EndGameViewModel(Client client, Data data, Action navigateToConfiguration, Action<string> navigateToMainMenu)
         {
             _client = client;
             LastVersionData = data;
@@ -63,20 +64,33 @@ namespace Joueur_Client.ViewModels
 
         private async void RestartGame()
         {
-            IsRestarting = true;
-            LastVersionData.PlayAgain = true;
-            await _client.SendData(LastVersionData);
-            NavigateToConfiguration();//y'a un problée quand on est prêt
+            try
+            {
+                IsRestarting = true;
+                LastVersionData.PlayAgain = true;
+                await _client.SendData(LastVersionData);
+                NavigateToConfiguration();
+            }
+            catch (SocketException)
+            {
+                NavigateToMainMenu("Connexion perdue avec le serveur");
+            }
         }
 
         private async void QuitGame()
         {
-            //action pendant le quittqge de partie
-            IsQuitting = true;
-            LastVersionData.PlayAgain = false;
-            await _client.SendData(LastVersionData);
-            _client.CloseConnection();
-            NavigateToMainMenu();
+            try
+            {
+                IsQuitting = true;
+                LastVersionData.PlayAgain = false;
+                await _client.SendData(LastVersionData);
+                _client.CloseConnection();
+                NavigateToMainMenu("");
+            }
+            catch (SocketException)
+            {
+                NavigateToMainMenu("Connexion perdue avec le serveur");
+            }
         }
     }
 }
