@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Joueur_Client/Joueur_Client.csproj" Id="ff8656a9-86c8-4edb-ad3d-9bd585853892" />
+  <Project Path="Joueur_Server.Tests/Joueur_Server.Tests.csproj" Id="6df9935c-1c34-4648-b692-a8a1477624df" />
   <Project Path="Joueur_Server/Joueur_Server.csproj" />
 </Solution>

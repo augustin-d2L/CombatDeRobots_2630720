@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Joueur_Server.Models
 {
-	internal abstract class Action
+	public abstract class Action
 	{
 		private string _name;
         private int _energyCost;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Joueur_Server.Service
 {
-    internal class Server
+    public class Server
     {
         private Socket _socket;
         private readonly Socket _listener;

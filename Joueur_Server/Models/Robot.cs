@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Joueur_Server.Models
 {
-    internal class Robot
+    public class Robot
     {
 		private string name;
         private int healthPoints;
@@ -70,8 +70,6 @@ namespace Joueur_Server.Models
 
         public void ConfigureRobot(int hp, int armor, int damage)
 		{
-			if (hp + armor + damage != GameConstants.HABILITY_POINTS)
-				throw new ArgumentException("Robot Must have spend the exact amount of hability points modification points");
 			HealthPoints += hp * GameConstants.HEALTH_MULTIPLIER;
 			Armor += armor * GameConstants.DEFENSE_MULTIPLIER;
 			Damage += damage * GameConstants.DAMAGE_MULTIPLIER;

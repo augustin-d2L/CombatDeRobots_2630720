@@ -8,7 +8,7 @@ using System.Windows.Controls.Ribbon;
 
 namespace Joueur_Server.Service
 {
-    internal class GameService : IServiceGame
+    public class GameService : IServiceGame
     {
         public bool PerformTurn(Data data, bool serverTurn)
         {
@@ -38,6 +38,7 @@ namespace Joueur_Server.Service
 
         public bool DataValidation(Robot robot)
         {
+            bool noNegative = true;
             //decortiquer le robot pour voir s'il est valide
             int health = robot.HealthPoints;
             int armor = robot.Armor;
@@ -51,8 +52,9 @@ namespace Joueur_Server.Service
             armor = armor / GameConstants.DEFENSE_MULTIPLIER;
             damage = damage / GameConstants.DAMAGE_MULTIPLIER;
             //enlever la valeur par defaut et ensuite diviser pour additionner et ça doit être egal à la valeur de la constante
+            if (health < 0 || armor < 0 || damage < 0) noNegative = false;
 
-            return (health + armor + damage) == GameConstants.HABILITY_POINTS;
+            return ((health + armor + damage) == GameConstants.HABILITY_POINTS) && noNegative;
         }
 
         public string OperateAction(ActionCombat? action, Robot player, Robot opponent)

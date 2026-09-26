@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Joueur_Server.Models
 {
-    internal class Data
+    public class Data
     {
         public Robot RobotServer { get; set; }
 

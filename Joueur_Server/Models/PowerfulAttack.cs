@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Joueur_Server.Models
 {
-    internal class PowerfulAttack : Action
+    public class PowerfulAttack : Action
     {
         public PowerfulAttack() :base("Powerful Attack", 0, 0) { }
 

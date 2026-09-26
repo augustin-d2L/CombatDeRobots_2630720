@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Joueur_Server.Models
 {
-    internal class Defense : Action
+    public class Defense : Action
     {
         public Defense() :base("Defense", 0, 0) { }
 
