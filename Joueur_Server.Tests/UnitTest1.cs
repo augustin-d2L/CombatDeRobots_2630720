@@ -11,7 +11,7 @@ namespace Joueur_Server.Tests
         {
         }
 
-        // TEST 1
+
         [Test]
         public void Execute_Configuration_ConfigurationValide()
         {
@@ -29,7 +29,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(valid, Is.EqualTo(true));
         }
-        // TEST 2
+
         [Test]
         public void Execute_Configuration_ConfigurationInvalide()
         {
@@ -47,7 +47,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(valid, Is.EqualTo(false));
         }
-        // TEST 3
+
         [Test]
         public void Execute_Configuration_ConfigurationInvalideNegative()
         {
@@ -65,11 +65,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(valid, Is.EqualTo(false));
         }
-        // TEST 4
-        // TEST 5
-        // TEST 6
-        // TEST 7
-        // TEST 8
+
         [Test]
         public void Execute_AttaquePuissante_AppliqueLesDegatsCorrects()
         {
@@ -84,7 +80,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(target.HealthPoints, Is.EqualTo(38));
         }
-        // TEST 9
+
         [Test]
         public void Execute_AttaquePuissante_ActionRefusee()
         {
@@ -99,7 +95,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(target.HealthPoints, Is.EqualTo(130));
         }
-        // TEST 10
+
         [Test]
         public void Execute_Defense_ReduitAttaque()
         {
@@ -116,7 +112,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(target.HealthPoints, Is.EqualTo(5));
         }
-        // TEST 11
+
         [Test]
         public void Execute_Recharge_EnergyAugmentee()
         {
@@ -131,12 +127,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(attacker.Energy, Is.EqualTo(5));
         }
-        // TEST 12
-        // TEST 13
-        // TEST 14
-        // TEST 15
-        // TEST 16
-        // TEST 17
+
         [Test]
         public void Execute_Json_SerialisationFonctionne()
         {
@@ -152,7 +143,7 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(baseData.Message, Is.EqualTo(extractedData.Message));
         }
-        // TEST 18
+
         [Test]
         public void Execute_AttaqueSimple_AppliqueLesDegatsCorrects()
         {
@@ -167,7 +158,5 @@ namespace Joueur_Server.Tests
             // Assert
             Assert.That(target.HealthPoints, Is.EqualTo(8));
         }
-
-        // TEST 19
     }
 }

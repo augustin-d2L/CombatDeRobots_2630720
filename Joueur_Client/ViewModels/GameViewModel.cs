@@ -26,20 +26,7 @@ namespace Joueur_Client.ViewModels
             {
                 if (SetProperty(ref _isTurnToPlay, value))
                 {
-                }
-            }
-        }
-        
-        private bool _choseAction;
-
-        public bool ChoseAction
-        {
-            get { return _choseAction; }
-            set
-            {
-                if (SetProperty(ref _choseAction, value))
-                {
-                    (PlayTurnCommand as RelayCommand)?.RaiseCanExecuteChanged(); //TODO : j'essaie de dire que quand une action est choisie le bouton se grise
+                    (PlayTurnCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -100,17 +87,19 @@ namespace Joueur_Client.ViewModels
             PlayTurnCommand = new RelayCommand(PlayTurn, CanPlayTurn);
         }
 
-        private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null && !ChoseAction;
+        private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;
         private async void PlayTurn(object? _)
         {
             try
             {
+                IsTurnToPlay = false;
+
                 ActionCombat action;
                 Enum.TryParse<ActionCombat>(SelectedAction, out action);
 
                 //Envoyer à l'autre l'action
                 LastVersionData.Action = action;
-                await _client.SendData(LastVersionData);//TODO il faut mettre un message pour l,afficher au client et dire au server ce qui c'est passé
+                await _client.SendData(LastVersionData);
 
                 //Recevoir l'action 
                 LastVersionData = await _client.ReceiveData();
@@ -124,7 +113,6 @@ namespace Joueur_Client.ViewModels
                 _robotClient = LastVersionData.RobotClient;
                 _robotServer = LastVersionData.RobotServer;
 
-                IsTurnToPlay = false;
                 UpdateDisplay();
 
                 if (LastVersionData.Winner != null)

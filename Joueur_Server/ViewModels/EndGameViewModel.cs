@@ -33,19 +33,19 @@ namespace Joueur_Server.ViewModels
         {
             try
             {
+                LastVersionData = await _server.ReceiveData();
                 if (LastVersionData.PlayAgain)
                     NavigateToConfiguration();
                 if (!LastVersionData.PlayAgain)
                 {
                     _server.CloseConnection();
-                    NavigateToMainMenu("");
+                    NavigateToMainMenu("Le client à quitté la partie");
                 }
             }
             catch (SocketException)
             {
                 NavigateToMainMenu("Connexion perdue avec le client");
             }
-            LastVersionData = await _server.ReceiveData();
         }
     }
 }
