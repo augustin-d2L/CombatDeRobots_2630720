@@ -34,23 +34,23 @@ namespace Joueur_Server.Service
             // accepte la connexion et la conserve dans le champ de classe
             _socket = await _listener.AcceptAsync();
 
-            var buffer = new byte[1_024];
+            //var buffer = new byte[1_024];
 
-            // recois un message
-            int received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
+            //// recois un message
+            //int received = await _socket.ReceiveAsync(buffer, SocketFlags.None);
 
-            // extrait le message
-            string response = Encoding.UTF8.GetString(buffer, 0, received);
+            //// extrait le message
+            //string response = Encoding.UTF8.GetString(buffer, 0, received);
 
-            if (response.IndexOf(GameConstants.EOM_DELIMITER) > -1)
-            {
-                // encode le message de retour
-                string ackMessage = "<|EOM|>";
-                byte[] echoBytes = Encoding.UTF8.GetBytes(ackMessage);
+            //if (response.IndexOf(GameConstants.EOM_DELIMITER) > -1)
+            //{
+            //    // encode le message de retour
+            //    string ackMessage = GameConstants.EOM_DELIMITER;
+            //    byte[] echoBytes = Encoding.UTF8.GetBytes(ackMessage);
 
-                // envoie le message de retour
-                await _socket.SendAsync(echoBytes, SocketFlags.None);
-            }
+            //    // envoie le message de retour
+            //    await _socket.SendAsync(echoBytes, SocketFlags.None);
+            //}
         }
 
         public async Task SendData(Data? data = null)

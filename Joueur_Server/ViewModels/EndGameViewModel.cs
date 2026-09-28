@@ -39,7 +39,7 @@ namespace Joueur_Server.ViewModels
                 if (!LastVersionData.PlayAgain)
                 {
                     _server.CloseConnection();
-                    NavigateToMainMenu("Le client à quitté la partie");
+                    NavigateToMainMenu("Le client à quitté la partie");//TODO : quand le client quitte la partie le serveur doit se remettre en attente.
                 }
             }
             catch (SocketException)

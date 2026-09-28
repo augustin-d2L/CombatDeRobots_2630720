@@ -41,7 +41,7 @@ namespace Joueur_Client.Service
             string response = Encoding.UTF8.GetString(buffer, 0, received); // octets reçus → texte
 
             // Si le serveur confirme bien la réception, la connexion est validée
-            return response == GameConstants.EOM_DELIMITER;
+            return response.ToString().EndsWith(GameConstants.EOM_DELIMITER);
         }
 
         public async Task SendData(Data? data = null)

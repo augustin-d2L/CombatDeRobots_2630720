@@ -14,7 +14,7 @@ namespace Joueur_Server.Models
 
         public ActionCombat? Action { get; set; }
 
-        public string GameState { get; set; }
+        public GameState GameState { get; set; }
 
         public bool PlayAgain { get; set; }
 

@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    internal class GameViewModel : BaseViewModel
+    internal class GameViewModel : BaseViewModel//TODO : garder une copie coter serveur et traiter le minumum d'infos venant du client
     {
         private readonly Server _server;
         private Robot _robotServer;
@@ -79,13 +79,11 @@ namespace Joueur_Server.ViewModels
             NavigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
 
-
-            IsTurnToPlay = false;
+            IsTurnToPlay = true;
+            LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
 
             SelectActionCommand = new RelayCommand(SelectAction);
             PlayTurnCommand = new RelayCommand(PlayTurn, CanPlayTurn);
-
-            _ = ListenToOpponent();
         }
 
         private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;
@@ -112,7 +110,12 @@ namespace Joueur_Server.ViewModels
                 UpdateDisplay();
 
                 if (gameInProgress) _ = ListenToOpponent();
-                else NavigateToEndGame(LastVersionData);
+                else
+                {
+                    LastVersionData.GameState = GameState.done;
+                    await _server.SendData(LastVersionData);
+                    NavigateToEndGame(LastVersionData);
+                }
             }
             catch (SocketException)
             {
@@ -127,6 +130,10 @@ namespace Joueur_Server.ViewModels
                 //attendre l'action
                 LastVersionData = await _server.ReceiveData();
 
+                //ajoute des robots depuis la mémoire
+                LastVersionData.RobotServer = _robotServer;
+                LastVersionData.RobotClient = _robotClient;
+
                 //traitement de l'action
                 bool gameInProgress = _server.Service.PerformTurn(LastVersionData, false);
 
@@ -135,7 +142,6 @@ namespace Joueur_Server.ViewModels
 
                 //update display
                 _robotClient = LastVersionData.RobotClient;
-                _robotServer = LastVersionData.RobotServer;
 
                 IsTurnToPlay = true;
 

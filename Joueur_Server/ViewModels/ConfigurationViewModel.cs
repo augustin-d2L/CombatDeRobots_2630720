@@ -1,4 +1,5 @@
 ﻿using Joueur_Server.Common;
+using Joueur_Server.Common.Enums;
 using Joueur_Server.Helpers;
 using Joueur_Server.Models;
 using Joueur_Server.Service;
@@ -128,20 +129,28 @@ namespace Joueur_Server.ViewModels
                 bool isValid = _server.Service.DataValidation(robotClient);
                 /* verifier config robot dans gameService */
 
-                await _server.SendData(new Data
-                {
-                    RobotClient = robotClient,
-                    RobotServer = robot,
-                    PlayerIsValid = isValid,
-                });
+                
 
                 //4 naviguer à la page de combat
                 if (isValid)
                 {
-                    _onBothReady(robot, robotClient);
+                    await _server.SendData(new Data
+                    {
+                        RobotClient = robotClient,
+                        RobotServer = CurrentRobot,
+                        PlayerIsValid = isValid,
+                        GameState = GameState.inProgress,
+                    });
+                    _onBothReady(CurrentRobot, robotClient);
                 }
                 else
                 {
+                    await _server.SendData(new Data
+                    {
+                        RobotClient = robotClient,
+                        RobotServer = CurrentRobot,
+                        PlayerIsValid = isValid,
+                    });
                     IsReady = false;
                 }
             }
