@@ -11,7 +11,7 @@ using System.Windows.Input;
 namespace Joueur_Server.ViewModels
 {
     internal class GameViewModel : BaseViewModel//TODO : garder une copie coter serveur et traiter le minumum d'infos venant du client
-    {
+    {//TODO : probleme au niveau des messages
         private readonly Server _server;
         private Robot _robotServer;
         private Robot _robotClient;
@@ -79,11 +79,13 @@ namespace Joueur_Server.ViewModels
             NavigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
 
-            IsTurnToPlay = true;
+            IsTurnToPlay = false;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
 
             SelectActionCommand = new RelayCommand(SelectAction);
             PlayTurnCommand = new RelayCommand(PlayTurn, CanPlayTurn);
+
+            _ = ListenToOpponent();
         }
 
         private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;
@@ -99,7 +101,8 @@ namespace Joueur_Server.ViewModels
                 //traitement de l'action
                 LastVersionData.Action = action;
 
-                bool gameInProgress = _server.Service.PerformTurn(LastVersionData, true);
+                if(!_server.Service.PerformTurn(LastVersionData, true))
+                    LastVersionData.GameState = GameState.done;
 
                 //envois de l'action faite au client
                 await _server.SendData(LastVersionData);
@@ -109,7 +112,7 @@ namespace Joueur_Server.ViewModels
                 _robotServer = LastVersionData.RobotServer;
                 UpdateDisplay();
 
-                if (gameInProgress) _ = ListenToOpponent();
+                if (LastVersionData.GameState != GameState.done) _ = ListenToOpponent();
                 else
                 {
                     LastVersionData.GameState = GameState.done;
@@ -135,7 +138,8 @@ namespace Joueur_Server.ViewModels
                 LastVersionData.RobotClient = _robotClient;
 
                 //traitement de l'action
-                bool gameInProgress = _server.Service.PerformTurn(LastVersionData, false);
+                if (!_server.Service.PerformTurn(LastVersionData, true))
+                    LastVersionData.GameState = GameState.done;
 
                 //retour avec l'action faite
                 await _server.SendData(LastVersionData);
@@ -146,7 +150,7 @@ namespace Joueur_Server.ViewModels
                 IsTurnToPlay = true;
 
                 UpdateDisplay();
-                if (!gameInProgress) NavigateToEndGame(LastVersionData);
+                if (LastVersionData.GameState == GameState.done) NavigateToEndGame(LastVersionData);
             }
             catch (SocketException)
             {

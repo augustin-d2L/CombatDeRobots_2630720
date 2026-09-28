@@ -14,7 +14,7 @@ namespace Joueur_Client.Models
 
         public ActionCombat? Action { get; set; }
 
-        public string GameState { get; set; }
+        public GameState GameState { get; set; }
 
         public bool PlayAgain { get; set; }
 
@@ -25,28 +25,6 @@ namespace Joueur_Client.Models
         public bool ServerIsReady { get; set; }
 
         public bool PlayerIsValid { get; set; }
-
-        public Data(
-            Robot robotServer,
-            Robot robotClient,
-            string gameState,
-            bool playAgain,
-            string winner,
-            string message,
-            bool serverIsReady,
-            bool playerIsValid,
-            ActionCombat? action)
-        {
-            RobotClient = robotClient;
-            RobotServer = robotServer;
-            Action = action;
-            GameState = gameState;
-            PlayAgain = playAgain;
-            Winner = winner;
-            Message = message;
-            ServerIsReady = serverIsReady;
-            PlayerIsValid = playerIsValid;
-        }
 
         public Data()
         {

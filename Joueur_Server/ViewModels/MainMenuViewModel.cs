@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    internal class MainMenuViewModel : BaseViewModel
+    internal class MainMenuViewModel : BaseViewModel//TODO : etat de base en attente de connexion
     {
         private readonly Server _server;
 

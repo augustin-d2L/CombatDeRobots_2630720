@@ -26,28 +26,6 @@ namespace Joueur_Server.Models
 
         public bool PlayerIsValid { get; set; }
 
-        public Data(
-            Robot robotServer, 
-            Robot robotClient,
-            string gameState,
-            bool playAgain, 
-            string winner,
-            string message, 
-            bool serverIsReady,
-            bool playerIsValid, 
-            ActionCombat? action)
-        {
-            RobotClient = robotClient;
-            RobotServer = robotServer;
-            Action = action;
-            GameState = gameState;
-            PlayAgain = playAgain;
-            Winner = winner;
-            Message = message;
-            ServerIsReady = serverIsReady;
-            PlayerIsValid = playerIsValid;
-        }
-
         public Data()
         {
         }

@@ -104,7 +104,7 @@ namespace Joueur_Client.ViewModels
                 //Recevoir l'action 
                 LastVersionData = await _client.ReceiveData();
 
-                if (LastVersionData.Winner != null)
+                if (LastVersionData.GameState == GameState.done)
                 {
                     //fim de partie
                     NavigateToEndGame(LastVersionData);
@@ -115,14 +115,7 @@ namespace Joueur_Client.ViewModels
 
                 UpdateDisplay();
 
-                if (LastVersionData.Winner != null)
-                {
-                    NavigateToEndGame(LastVersionData);
-                }
-                else
-                {
-                    _ = ListenToOpponent();
-                }
+                _ = ListenToOpponent();
             }
             catch (SocketException)
             {
@@ -136,7 +129,7 @@ namespace Joueur_Client.ViewModels
             {
                 LastVersionData = await _client.ReceiveData();
 
-                if (LastVersionData.Winner != null)
+                if (LastVersionData.GameState == GameState.done)
                 {
                     //fim de partie
                     NavigateToEndGame(LastVersionData);
