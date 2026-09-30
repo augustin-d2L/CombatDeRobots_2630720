@@ -79,13 +79,11 @@ namespace Joueur_Server.ViewModels
             NavigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
 
-            IsTurnToPlay = false;
+            IsTurnToPlay = true;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
 
             SelectActionCommand = new RelayCommand(SelectAction);
             PlayTurnCommand = new RelayCommand(PlayTurn, CanPlayTurn);
-
-            _ = ListenToOpponent();
         }
 
         private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;
@@ -138,7 +136,7 @@ namespace Joueur_Server.ViewModels
                 LastVersionData.RobotClient = _robotClient;
 
                 //traitement de l'action
-                if (!_server.Service.PerformTurn(LastVersionData, true))
+                if (!_server.Service.PerformTurn(LastVersionData, false))
                     LastVersionData.GameState = GameState.done;
 
                 //retour avec l'action faite

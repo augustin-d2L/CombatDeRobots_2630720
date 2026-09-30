@@ -80,11 +80,13 @@ namespace Joueur_Client.ViewModels
             NavigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
 
-            IsTurnToPlay = true;
+            IsTurnToPlay = false;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
 
             SelectActionCommand = new RelayCommand(SelectAction);
             PlayTurnCommand = new RelayCommand(PlayTurn, CanPlayTurn);
+
+            _ = ListenToOpponent();
         }
 
         private bool CanPlayTurn(object? _) => IsTurnToPlay && SelectedAction != null;

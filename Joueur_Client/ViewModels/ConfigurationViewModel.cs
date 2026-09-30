@@ -117,7 +117,7 @@ namespace Joueur_Client.ViewModels
                 var robot = new Robot(RobotName);
                 robot.ConfigureRobot(HpPoints, ArmorPoints, DamagePoints);
                 CurrentRobot = robot;
-                //robot est pret donc envoie de DATA vide avec ServerIsReady = True;
+                //robot est pret donc envoie de DATA vide avec ServerIsReady = True; TODO : mettre la condition pour attendre serverisready et pas n'importeQuoi
                 //1 receiveData ServerIsReady;
                 await _client.ReceiveData();
 

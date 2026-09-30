@@ -17,6 +17,7 @@
             <RowDefinition Height="2*"/>
             <RowDefinition />
         </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding RobotName, StringFormat='Vous êtes {0} (serveur)'}" />
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Page de Jeu" FontSize="60" />
         </StackPanel>

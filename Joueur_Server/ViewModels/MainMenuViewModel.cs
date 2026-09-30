@@ -39,6 +39,7 @@ namespace Joueur_Server.ViewModels
             Message = message;
 
             HostGameCommand = new RelayCommand(HostGame, () => !IsHosting);
+            HostGame();
         }
 
         private async void HostGame()
