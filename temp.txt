@@ -1,0 +1,7 @@
+client :
+- Marie : tout fonctionne
+- Tommy : crash à la fin du combats
+
+server :
+- Marie : replay fonctionne pas sinon tout vas (erreur coté marie)
+- Tommy : crash à la fin du combats
