@@ -111,13 +111,15 @@ namespace Joueur_Client.ViewModels
                     //fim de partie
                     NavigateToEndGame(LastVersionData);
                 }
+                else
+                {
+                    _robotClient = LastVersionData.RobotClient;
+                    _robotServer = LastVersionData.RobotServer;
 
-                _robotClient = LastVersionData.RobotClient;
-                _robotServer = LastVersionData.RobotServer;
+                    UpdateDisplay();
 
-                UpdateDisplay();
-
-                _ = ListenToOpponent();
+                    _ = ListenToOpponent();
+                }
             }
             catch (SocketException)
             {

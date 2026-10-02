@@ -113,8 +113,6 @@ namespace Joueur_Server.ViewModels
                 if (LastVersionData.GameState != GameState.done) _ = ListenToOpponent();
                 else
                 {
-                    LastVersionData.GameState = GameState.done;
-                    await _server.SendData(LastVersionData);
                     NavigateToEndGame(LastVersionData);
                 }
             }
