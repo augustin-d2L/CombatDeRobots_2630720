@@ -3,7 +3,7 @@ client :
 - Tommy : crash à la fin du combats
 
 server :
-- Marie : replay fonctionne pas sinon tout vas (erreur coté marie)
+- Marie : tout fonctionne
 - Tommy : crash à la fin du combats
 
 que je fais rejouer, le client ne passe après la config et le serveur joue tout seul quand le serveur gagne, si le client gagne les deux reste bloqué à l'écran de config et l'erreure est pas constante genre des fois oui des fois non
