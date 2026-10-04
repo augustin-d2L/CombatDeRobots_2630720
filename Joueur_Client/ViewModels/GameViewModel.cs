@@ -31,6 +31,18 @@ namespace Joueur_Client.ViewModels
             }
         }
 
+        private string _messageToSend = "";
+        public string MessageToSend
+        {
+            get => _messageToSend;
+            set
+            {
+                if (SetProperty(ref _messageToSend, value))
+                {
+                }
+            }
+        }
+
         private string? _selectedAction;
         public string? SelectedAction// peut - être moyen de directement convertir ici
         {
@@ -101,6 +113,12 @@ namespace Joueur_Client.ViewModels
 
                 //Envoyer à l'autre l'action
                 LastVersionData.Action = action;
+
+                if (!MessageToSend.IsWhiteSpace())
+                    LastVersionData.Message = MessageToSend;
+                else
+                    LastVersionData.Message = "";
+
                 await _client.SendData(LastVersionData);
 
                 //Recevoir l'action 
@@ -115,6 +133,7 @@ namespace Joueur_Client.ViewModels
                 {
                     _robotClient = LastVersionData.RobotClient;
                     _robotServer = LastVersionData.RobotServer;
+                    MessageToSend = "";
 
                     UpdateDisplay();
 

@@ -144,6 +144,12 @@ namespace Joueur_Server.ViewModels
             {
                 //attendre l'action
                 LastVersionData = await _server.ReceiveData();
+                string messageReceived = "";
+
+                if (!LastVersionData.Message.IsWhiteSpace())
+                {
+                    messageReceived = LastVersionData.Message;
+                }
 
                 //ajoute des robots depuis la mémoire
                 LastVersionData.RobotServer = _robotServer;
@@ -152,6 +158,10 @@ namespace Joueur_Server.ViewModels
                 //traitement de l'action
                 if (!_server.Service.PerformTurn(LastVersionData, false))
                     LastVersionData.GameState = GameState.done;
+                if (!messageReceived.IsWhiteSpace())
+                {
+                    LastVersionData.Message = messageReceived;
+                }
 
                 //retour avec l'action faite
                 await _server.SendData(LastVersionData);
