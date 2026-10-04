@@ -129,6 +129,29 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <!-- Titre de bloc (nom d'un robot, titre d'une section) -->
+    <Style x:Key="HeadingText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DinFont}"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource ChalkBrush}"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <!-- "(+10)" en vert, caché quand le bonus est nul -->
+    <Style x:Key="GainText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DinFont}"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Foreground" Value="{StaticResource GainBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="8,0,0,0"/>
+        <Style.Triggers>
+            <Trigger Property="Text" Value="(+0)">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="AlertText" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource DinFont}"/>
         <Setter Property="FontSize" Value="15"/>
@@ -318,18 +341,87 @@
                 <Setter Property="Foreground" Value="{StaticResource PaleLineBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource DisabledFillBrush}"/>
             </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DisabledFillBrush}"/>
+            </Trigger>
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="GainText" TargetType="TextBlock">
+    <!-- ===================== Choix d'action ===================== -->
+    <!--
+        RadioButton en forme de plaque : Content = nom de l'action, Tag = courte explication.
+        Cochée = plaque jaune. Désactivée = grisée (ex. pendant le tour adverse).
+    -->
+    <Style x:Key="ActionChip" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource ChalkBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PaleLineBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="14,10"/>
         <Setter Property="FontFamily" Value="{StaticResource DinFont}"/>
         <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Foreground" Value="{StaticResource GainBrush}"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="8,0,0,0"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <Border x:Name="Plate"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True">
+                            <StackPanel>
+                                <ContentPresenter RecognizesAccessKey="True"/>
+                                <TextBlock x:Name="Hint"
+                                           Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                           FontSize="13"
+                                           FontWeight="Normal"
+                                           TextWrapping="Wrap"
+                                           Margin="0,4,0,0"
+                                           Foreground="{StaticResource PaleLineBrush}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="FocusRing"
+                                BorderBrush="{StaticResource ChalkBrush}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Margin="-4"
+                                Visibility="Collapsed"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="FocusRing" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Hint" Property="Foreground" Value="{StaticResource BlueprintDeepBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Hint" Property="Foreground" Value="{StaticResource DisabledTextBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="Text" Value="(+0)">
-                <Setter Property="Visibility" Value="Collapsed"/>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ChalkWashBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ChalkBrush}"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource SignalBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource SignalBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource BlueprintDeepBrush}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DisabledFillBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}"/>
+                <Setter Property="Cursor" Value="Arrow"/>
             </Trigger>
         </Style.Triggers>
     </Style>
