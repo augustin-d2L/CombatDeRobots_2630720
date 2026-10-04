@@ -63,8 +63,19 @@ namespace Joueur_Server.Service
             switch (action)
             {
                 case ActionCombat.ATTACK:
-                    Attack.Execute(player, opponent);
-                    message = $"{player.Name} a fait ATTAQUE sur {opponent.Name}";
+                    Random random = new Random();
+                    if(random.Next(0, 100) >= 10)
+                    {
+                        Attack.Execute(player, opponent);
+                        message = $"{player.Name} a fait ATTAQUE sur {opponent.Name}";
+                    }
+                    else
+                    {
+                        player.Damage *= 2;
+                        Attack.Execute(player, opponent);
+                        player.Damage /= 2;
+                        message = $"{player.Name} a fait ATTAQUE CRITIQUE sur {opponent.Name}";
+                    }
                     break;
                 case ActionCombat.POWERFUL_ATTACK:
                     PowerfulAttack.Execute(player, opponent);
