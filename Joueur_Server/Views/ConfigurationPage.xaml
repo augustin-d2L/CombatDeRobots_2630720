@@ -68,7 +68,6 @@
                                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Points" Style="{StaticResource FieldLabelText}" HorizontalAlignment="Center"/>
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Résultat" Style="{StaticResource FieldLabelText}" Margin="32,0,0,0"/>
 
-                                <!-- Vie -->
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Vie" Style="{StaticResource BodyText}" VerticalAlignment="Center"/>
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button Content="−" Style="{StaticResource StepperButton}"

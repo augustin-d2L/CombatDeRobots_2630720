@@ -9,7 +9,8 @@
         mc:Ignorable="d"
         Title="Combat de Robots" Height="720" Width="1280"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BlueprintBackgroundBrush}">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:MainMenuViewModel}">
