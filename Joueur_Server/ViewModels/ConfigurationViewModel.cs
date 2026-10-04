@@ -57,6 +57,9 @@ namespace Joueur_Server.ViewModels
         public int PreviewHealthPoints => GameConstants.BASE_HEALTH_POINTS + HpPoints * GameConstants.HEALTH_MULTIPLIER;
         public int PreviewArmor => GameConstants.BASE_ARMOR + ArmorPoints * GameConstants.DEFENSE_MULTIPLIER;
         public int PreviewDamage => GameConstants.BASE_DAMAGE + DamagePoints * GameConstants.DAMAGE_MULTIPLIER;
+        public int HpBonus => HpPoints * GameConstants.HEALTH_MULTIPLIER;
+        public int ArmorBonus => ArmorPoints * GameConstants.DEFENSE_MULTIPLIER;
+        public int DamageBonus => DamagePoints * GameConstants.DAMAGE_MULTIPLIER;
 
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
@@ -166,6 +169,9 @@ namespace Joueur_Server.ViewModels
             OnPropertyChanged(nameof(PreviewHealthPoints));
             OnPropertyChanged(nameof(PreviewArmor));
             OnPropertyChanged(nameof(PreviewDamage));
+            OnPropertyChanged(nameof(HpBonus));
+            OnPropertyChanged(nameof(ArmorBonus));
+            OnPropertyChanged(nameof(DamageBonus));
             (IncrementCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (DecrementCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (ConfirmCommand as RelayCommand)?.RaiseCanExecuteChanged();
