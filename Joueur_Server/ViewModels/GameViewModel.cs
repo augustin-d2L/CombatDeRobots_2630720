@@ -30,6 +30,18 @@ namespace Joueur_Server.ViewModels
             }
         }
 
+        private string _messageToSend = "";
+        public string MessageToSend
+        {
+            get => _messageToSend;
+            set
+            {
+                if (SetProperty(ref _messageToSend, value))
+                {
+                }
+            }
+        }
+
         private string? _selectedAction;
         public string? SelectedAction// peut - être moyen de directement convertir ici
         {
@@ -102,12 +114,16 @@ namespace Joueur_Server.ViewModels
                 if(!_server.Service.PerformTurn(LastVersionData, true))
                     LastVersionData.GameState = GameState.done;
 
+                if(!MessageToSend.IsWhiteSpace())
+                    LastVersionData.Message = MessageToSend;
+
                 //envois de l'action faite au client
                 await _server.SendData(LastVersionData);
 
                 //mise a jour display et retour en attente
                 _robotClient = LastVersionData.RobotClient;
                 _robotServer = LastVersionData.RobotServer;
+                MessageToSend = "";
                 UpdateDisplay();
 
                 if (LastVersionData.GameState != GameState.done) _ = ListenToOpponent();
