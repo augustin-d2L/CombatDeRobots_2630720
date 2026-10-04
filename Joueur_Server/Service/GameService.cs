@@ -33,6 +33,7 @@ namespace Joueur_Server.Service
                 data.Message = $"{data.Winner} est le gagnant, il a battu {opponent.Name}";
                 return false;
             }
+            player.Energy += 1;
             return true;
         }
 
