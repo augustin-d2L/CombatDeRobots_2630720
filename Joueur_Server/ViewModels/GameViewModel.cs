@@ -111,10 +111,14 @@ namespace Joueur_Server.ViewModels
                 //traitement de l'action
                 LastVersionData.Action = action;
 
-                if(!_server.Service.PerformTurn(LastVersionData, true))
+                // if action = defense
+                // repondre à un calcul
+                // si echec on fait rien
+                // else
+                if (!_server.Service.PerformTurn(LastVersionData, true))
                     LastVersionData.GameState = GameState.done;
 
-                if(!MessageToSend.IsWhiteSpace())
+                if (!MessageToSend.IsWhiteSpace())
                     LastVersionData.Message = MessageToSend;
 
                 //envois de l'action faite au client
@@ -156,6 +160,12 @@ namespace Joueur_Server.ViewModels
                 LastVersionData.RobotClient = _robotClient;
 
                 //traitement de l'action
+                // if action = DEFENSE                          if
+                // recuperer un calcul                          string calcul = "{x} + {op} + {y}", int repserv = x + y
+                // envoyer le calcul et sauver la reponser      SendData
+                // receoir reponse                              ReceiveData
+                // si faux on fait pas laction                  if repcli != repserv
+                // sinon            
                 if (!_server.Service.PerformTurn(LastVersionData, false))
                     LastVersionData.GameState = GameState.done;
                 if (!messageReceived.IsWhiteSpace())

@@ -119,6 +119,10 @@ namespace Joueur_Client.ViewModels
                 else
                     LastVersionData.Message = "";
 
+                // if action = defense
+                // recevoir calcul
+                // envoyer reponse 
+                // else
                 await _client.SendData(LastVersionData);
 
                 //Recevoir l'action 
