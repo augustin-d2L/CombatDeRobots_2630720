@@ -26,9 +26,9 @@ namespace Joueur_Server.Models
 
         public bool PlayerIsValid { get; set; }
 
-        public string MathProblem { get; set; }
+        public string Equation { get; set; }
 
-        public int ClientCalculAnswer { get; set; }
+        public int EquationAnswer { get; set; }
 
         public Data()
         {

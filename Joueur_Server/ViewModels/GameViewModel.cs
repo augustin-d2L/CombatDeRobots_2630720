@@ -112,11 +112,17 @@ namespace Joueur_Server.ViewModels
                 LastVersionData.Action = action;
 
                 // if action = defense
-                // repondre à un calcul
-                // si echec on fait rien
-                // else
-                if (!_server.Service.PerformTurn(LastVersionData, true))
-                    LastVersionData.GameState = GameState.done;
+                if(LastVersionData.Action == ActionCombat.DEFENSE)
+                {
+                    // repondre à un calcul
+                    // si echec on fait rien
+                }
+                else
+                {
+                    if (!_server.Service.PerformTurn(LastVersionData, true))
+                        LastVersionData.GameState = GameState.done;
+                }
+                
 
                 if (!MessageToSend.IsWhiteSpace())
                     LastVersionData.Message = MessageToSend;

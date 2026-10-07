@@ -33,7 +33,7 @@ namespace Joueur_Server.Service
                 data.Message = $"{data.Winner} est le gagnant, il a battu {opponent.Name}";
                 return false;
             }
-            player.Energy += 1;
+            player.Energy += GameConstants.PASSIVE_ENERGY_GAIN;
             return true;
         }
 
@@ -65,7 +65,7 @@ namespace Joueur_Server.Service
             {
                 case ActionCombat.ATTACK:
                     Random random = new Random();
-                    if(random.Next(0, 100) >= 10)
+                    if(random.Next(0, 100) >= GameConstants.ATTACK_CRITICAL_CHANCE)
                     {
                         Attack.Execute(player, opponent);
                         message = $"{player.Name} a fait ATTAQUE sur {opponent.Name}";
@@ -78,11 +78,11 @@ namespace Joueur_Server.Service
                         message = $"{player.Name} a fait ATTAQUE CRITIQUE sur {opponent.Name}";
                     }
                     break;
-                case ActionCombat.POWERFUL_ATTACK:
+                case ActionCombat.POWERFUL_ATTACK://TODO : ajouter la logique random d'echec
                     PowerfulAttack.Execute(player, opponent);
                     message = $"{player.Name} a fait ATTAQUE PUISSANTE sur {opponent.Name}";
                     break;
-                case ActionCombat.DEFENSE:
+                case ActionCombat.DEFENSE://TODO : ajouter la logique random d'echec
                     Defense.Execute(player, opponent);
                     message = $"{player.Name} a fait DEFENSE et a gagné de la défense bonus";
                     break;
@@ -95,6 +95,43 @@ namespace Joueur_Server.Service
                     break;
             }
             return message;
+        }
+
+        public (string equation, int answer) CreateEquation()
+        {
+            int val1 = new Random().Next(GameConstants.MINIMUM_RANGE_EQUATION, GameConstants.MAXIMUM_RANGE_EQUATION);
+            int val2 = new Random().Next(GameConstants.MINIMUM_RANGE_EQUATION, GameConstants.MAXIMUM_RANGE_EQUATION);
+            int op = new Random().Next(3);
+
+            string equation = "";
+            int answer = 0;
+            switch (op)
+            {
+                case 0:
+                    equation = $"{val1} + {val2} = ";
+                    answer = val1 + val2;
+                    break;
+                case 1:
+                    if (val1 >= val2)
+                    {
+                        equation = $"{val1} - {val2} = ";
+                        answer = val1 - val2;
+                    }
+                    else
+                    {
+                        equation = $"{val2} - {val1} = ";
+                        answer = val2 - val1;
+                    }
+                    break;
+                case 2:
+                    equation = $"{val1} * {val2} = ";
+                    answer = val1 * val2;
+                    break;
+                default:
+                    break;
+            }
+
+            return (equation, answer);
         }
 
         public Models.Action Attack { get; set; }
