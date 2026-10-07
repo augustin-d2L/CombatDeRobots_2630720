@@ -97,10 +97,10 @@ namespace Joueur_Server.Service
             return message;
         }
 
-        public (string equation, int answer) CreateEquation()
+        public (string equation, int answer) CreateArithmeticExpression()
         {
-            int val1 = new Random().Next(GameConstants.MINIMUM_RANGE_EQUATION, GameConstants.MAXIMUM_RANGE_EQUATION);
-            int val2 = new Random().Next(GameConstants.MINIMUM_RANGE_EQUATION, GameConstants.MAXIMUM_RANGE_EQUATION);
+            int val1 = new Random().Next(GameConstants.MINIMUM_RANGE_ARITHMETIC_EXPRESSION, GameConstants.MAXIMUM_RANGE_ARITHMETIC_EXPRESSION);
+            int val2 = new Random().Next(GameConstants.MINIMUM_RANGE_ARITHMETIC_EXPRESSION, GameConstants.MAXIMUM_RANGE_ARITHMETIC_EXPRESSION);
             int op = new Random().Next(3);
 
             string equation = "";

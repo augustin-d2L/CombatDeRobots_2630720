@@ -29,7 +29,7 @@ namespace Joueur_Client.Common
         public const int DEFENSE_FAIL_CHANCE = 10;
 
         public const int PASSIVE_ENERGY_GAIN = 1;
-        public const int MINIMUM_RANGE_EQUATION = 0;
-        public const int MAXIMUM_RANGE_EQUATION = 100;
+        public const int MINIMUM_RANGE_ARITHMETIC_EXPRESSION = 0;
+        public const int MAXIMUM_RANGE_ARITHMETIC_EXPRESSION = 100;
     }
 }
