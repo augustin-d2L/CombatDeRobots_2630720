@@ -23,6 +23,7 @@
     <Color x:Key="DisabledTextColor">#7F9BB8</Color>
     <Color x:Key="ChalkWashColor">#1FEEF4FA</Color>
     <Color x:Key="GainColor">#8BE3A8</Color>
+    <SolidColorBrush x:Key="ScrimBrush" Color="#B30C2C4F"/>
 
     <!-- ===================== Pinceaux ===================== -->
     <SolidColorBrush x:Key="BlueprintBrush" Color="{StaticResource BlueprintColor}"/>

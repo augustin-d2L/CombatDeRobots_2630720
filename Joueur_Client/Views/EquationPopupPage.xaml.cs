@@ -11,10 +11,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Joueur_Server.Views
+namespace Joueur_Client.Views
 {
     /// <summary>
-    /// Logique d'interaction pour EquationPopupPage.xaml
+    /// Interaction logic for EquationPopupPage.xaml
     /// </summary>
     public partial class EquationPopupPage : UserControl
     {

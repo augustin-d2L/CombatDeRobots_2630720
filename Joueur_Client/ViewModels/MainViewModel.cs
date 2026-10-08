@@ -18,6 +18,13 @@ namespace Joueur_Client.ViewModels
             set => SetProperty(ref _currentPage, value);
         }
 
+        private BaseViewModel? _currentPopup;
+        public BaseViewModel? CurrentPopup
+        {
+            get => _currentPopup;
+            set => SetProperty(ref _currentPopup, value);
+        }
+
         public MainViewModel()
         {
             _client = new Client();
@@ -32,7 +39,7 @@ namespace Joueur_Client.ViewModels
 
         private void NavigateToGame(Robot robotServer, Robot robotClient)
         {
-            CurrentPage = new GameViewModel(_client, robotServer, robotClient, NavigateToEndGame, NavigateToMainMenu);
+            CurrentPage = new GameViewModel(_client, robotServer, robotClient, NavigateToEndGame, NavigateToMainMenu, AskQuestion);
         }
 
         private void NavigateToEndGame(Data data)
@@ -43,6 +50,19 @@ namespace Joueur_Client.ViewModels
         private void NavigateToMainMenu(string? msg = null)
         {
             CurrentPage = new MainMenuViewModel(_client, NavigateToConfiguration, msg);
+        }
+
+        private Task<int> AskQuestion(string question)
+        {
+            var tcs = new TaskCompletionSource<int>();
+
+            CurrentPopup = new EquationPopupViewModel(question, answer =>
+            {
+                CurrentPopup = null;
+                tcs.TrySetResult(answer);
+            });
+
+            return tcs.Task;
         }
     }
 }

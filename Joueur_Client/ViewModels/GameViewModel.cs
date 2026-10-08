@@ -82,14 +82,16 @@ namespace Joueur_Client.ViewModels
 
         public System.Action<Data> NavigateToEndGame { get; }
         private readonly System.Action<string?> _navigateToMainMenu;
+        private readonly Func<string, Task<int>> _askQuestion;
 
 
-        public GameViewModel(Client client, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu)
+        public GameViewModel(Client client, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu, Func<string, Task<int>> askQuestion)
         {
             _client = client;
             _robotServer = robotServer;
             _robotClient = robotClient;
             NavigateToEndGame = navigateToEndGame;
+            _askQuestion = askQuestion;
             _navigateToMainMenu = navigateToMainMenu;
 
             IsTurnToPlay = false;
@@ -120,6 +122,12 @@ namespace Joueur_Client.ViewModels
                     LastVersionData.Message = "";
 
                 // if action = defense
+                if(LastVersionData.Action == ActionCombat.DEFENSE)
+                {
+                    await _client.SendData(LastVersionData);
+                    LastVersionData = await _client.ReceiveData();
+                    LastVersionData.ArithmeticExpressionAnswer = await _askQuestion(LastVersionData.ArithmeticExpression);
+                }
                 // recevoir calcul
                 // envoyer reponse 
                 // else

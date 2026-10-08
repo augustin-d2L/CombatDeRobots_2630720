@@ -81,15 +81,17 @@ namespace Joueur_Server.ViewModels
 
         public System.Action<Data> NavigateToEndGame { get; }
         private readonly System.Action<string?> _navigateToMainMenu;
+        private readonly Func<string, Task<int>> _askQuestion;
 
 
-        public GameViewModel(Server server, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu)
+        public GameViewModel(Server server, Robot robotServer, Robot robotClient, System.Action<Data> navigateToEndGame, System.Action<string?> navigateToMainMenu, Func<string, Task<int>> askQuestion)
         {
             _server = server;
             _robotServer = robotServer;
             _robotClient = robotClient;
             NavigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
+            _askQuestion = askQuestion;
 
             IsTurnToPlay = true;
             LastVersionData = new Data { RobotClient = _robotClient, RobotServer = _robotServer };
@@ -115,9 +117,17 @@ namespace Joueur_Server.ViewModels
                 if(LastVersionData.Action == ActionCombat.DEFENSE)
                 {
                     // repondre à un calcul
-                    // si echec on fait rien
+                    var arithmeticExpression = _server.Service.CreateArithmeticExpression();
+                    string question = $"Résoudre le calcul suivant : {arithmeticExpression.equation}";
+                    int answer = await _askQuestion(question);
+                    bool success = answer == arithmeticExpression.answer;
+                    if(success)
+                    {
+                        if (!_server.Service.PerformTurn(LastVersionData, true))
+                            LastVersionData.GameState = GameState.done;
+                    }
                 }
-                else
+                if(LastVersionData.Action != ActionCombat.DEFENSE)
                 {
                     if (!_server.Service.PerformTurn(LastVersionData, true))
                         LastVersionData.GameState = GameState.done;
@@ -165,15 +175,25 @@ namespace Joueur_Server.ViewModels
                 LastVersionData.RobotServer = _robotServer;
                 LastVersionData.RobotClient = _robotClient;
 
-                //traitement de l'action
-                // if action = DEFENSE                          if
-                // recuperer un calcul                          string calcul = "{x} + {op} + {y}", int repserv = x + y
-                // envoyer le calcul et sauver la reponser      SendData
-                // receoir reponse                              ReceiveData
-                // si faux on fait pas laction                  if repcli != repserv
-                // sinon            
-                if (!_server.Service.PerformTurn(LastVersionData, false))
-                    LastVersionData.GameState = GameState.done;
+                if(LastVersionData.Action == ActionCombat.DEFENSE)
+                {
+                    var arithmeticExpression = _server.Service.CreateArithmeticExpression();
+                    LastVersionData.ArithmeticExpression = arithmeticExpression.equation;
+
+                    await _server.SendData(LastVersionData);
+                    LastVersionData = await _server.ReceiveData();
+
+                    if(LastVersionData.ArithmeticExpressionAnswer == arithmeticExpression.answer)
+                    {
+                        if (!_server.Service.PerformTurn(LastVersionData, false))
+                            LastVersionData.GameState = GameState.done;
+                    }
+                }
+                if(LastVersionData.Action != ActionCombat.DEFENSE)
+                {
+                    if (!_server.Service.PerformTurn(LastVersionData, false))
+                        LastVersionData.GameState = GameState.done;
+                }
                 if (!messageReceived.IsWhiteSpace())
                 {
                     LastVersionData.Message = messageReceived;

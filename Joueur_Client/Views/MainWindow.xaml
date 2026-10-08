@@ -25,8 +25,39 @@
         <DataTemplate DataType="{x:Type vm:EndGameViewModel}">
             <views:EndGamePage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EquationPopupViewModel}">
+            <views:EquationPopupPage />
+        </DataTemplate>
     </Window.Resources>
 
-    <ContentControl Content="{Binding CurrentPage}" />
-    
+    <Grid>
+        <ContentControl Content="{Binding CurrentPage}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentPopup}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentPopup}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Rectangle Fill="{StaticResource ScrimBrush}"/>
+            <ContentControl Content="{Binding CurrentPopup}"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+
 </Window>
