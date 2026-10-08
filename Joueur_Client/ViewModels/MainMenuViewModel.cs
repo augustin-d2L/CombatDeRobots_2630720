@@ -46,13 +46,13 @@ namespace Joueur_Client.ViewModels
 
         public ICommand ConnectToGameCommand { get; }
 
-        public Action NavigateToConfiguration { get; }
+        private readonly Action _navigateToConfiguration;
 
         public MainMenuViewModel(Client client, Action navigateToConfiguration, string? message = "")
         {
             _client = client;
             Message = message;
-            NavigateToConfiguration = navigateToConfiguration;
+            _navigateToConfiguration = navigateToConfiguration;
             ConnectToGameCommand = new RelayCommand(ConnectToGame, () => !IsConnecting);
         }
 
@@ -77,7 +77,7 @@ namespace Joueur_Client.ViewModels
                 {
                     IsConnecting = true;
                     await _client.SendData(port, ip);
-                    NavigateToConfiguration();
+                    _navigateToConfiguration();
                 }
             }
             catch (SocketException)

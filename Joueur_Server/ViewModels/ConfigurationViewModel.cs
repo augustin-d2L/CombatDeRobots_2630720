@@ -64,6 +64,7 @@ namespace Joueur_Server.ViewModels
         public ICommand IncrementCommand { get; }
         public ICommand DecrementCommand { get; }
         public ICommand ConfirmCommand { get; }
+
         private readonly Action<Robot, Robot> _onBothReady;
         private readonly System.Action<string?> _navigateToMainMenu;
         

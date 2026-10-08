@@ -7,7 +7,6 @@ namespace Joueur_Client.Common
     public static class GameConstants
     {
         public const int HABILITY_POINTS = 10;
-
         public const int BASE_HEALTH_POINTS = 100;
         public const int BASE_ARMOR = 0;
         public const int BASE_DAMAGE = 10;

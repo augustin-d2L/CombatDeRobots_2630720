@@ -44,7 +44,7 @@ namespace Joueur_Client.ViewModels
         }
 
         private string? _selectedAction;
-        public string? SelectedAction// peut - être moyen de directement convertir ici
+        public string? SelectedAction
         {
             get => _selectedAction;
             private set
@@ -80,7 +80,7 @@ namespace Joueur_Client.ViewModels
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
-        public System.Action<Data> NavigateToEndGame { get; }
+        private readonly System.Action<Data> _navigateToEndGame;
         private readonly System.Action<string?> _navigateToMainMenu;
         private readonly Func<string, Task<int>> _askQuestion;
 
@@ -90,7 +90,7 @@ namespace Joueur_Client.ViewModels
             _client = client;
             _robotServer = robotServer;
             _robotClient = robotClient;
-            NavigateToEndGame = navigateToEndGame;
+            _navigateToEndGame = navigateToEndGame;
             _askQuestion = askQuestion;
             _navigateToMainMenu = navigateToMainMenu;
 
@@ -113,7 +113,6 @@ namespace Joueur_Client.ViewModels
                 ActionCombat action;
                 Enum.TryParse<ActionCombat>(SelectedAction, out action);
 
-                //Envoyer à l'autre l'action
                 LastVersionData.Action = action;
 
                 if (!MessageToSend.IsWhiteSpace())
@@ -121,25 +120,20 @@ namespace Joueur_Client.ViewModels
                 else
                     LastVersionData.Message = "";
 
-                // if action = defense
                 if(LastVersionData.Action == ActionCombat.DEFENSE)
                 {
                     await _client.SendData(LastVersionData);
                     LastVersionData = await _client.ReceiveData();
                     LastVersionData.ArithmeticExpressionAnswer = await _askQuestion(LastVersionData.ArithmeticExpression);
                 }
-                // recevoir calcul
-                // envoyer reponse 
-                // else
+
                 await _client.SendData(LastVersionData);
 
-                //Recevoir l'action 
                 LastVersionData = await _client.ReceiveData();
 
                 if (LastVersionData.GameState == GameState.done)
                 {
-                    //fim de partie
-                    NavigateToEndGame(LastVersionData);
+                    _navigateToEndGame(LastVersionData);
                 }
                 else
                 {
@@ -166,8 +160,7 @@ namespace Joueur_Client.ViewModels
 
                 if (LastVersionData.GameState == GameState.done)
                 {
-                    //fim de partie
-                    NavigateToEndGame(LastVersionData);
+                    _navigateToEndGame(LastVersionData);
                 }
 
                 _robotClient = LastVersionData.RobotClient;

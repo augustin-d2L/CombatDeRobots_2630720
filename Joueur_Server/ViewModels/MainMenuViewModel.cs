@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    internal class MainMenuViewModel : BaseViewModel//TODO : etat de base en attente de connexion
+    internal class MainMenuViewModel : BaseViewModel
     {
         private readonly Server _server;
 
@@ -28,12 +28,13 @@ namespace Joueur_Server.ViewModels
         }
 
         public ICommand HostGameCommand { get; }
-        public Action NavigateToConfiguration { get; }
+
+        private readonly Action _navigateToConfiguration;
 
         public MainMenuViewModel(Server server, Action navigateToConfiguration, string? message = "")
         {
             _server = server;
-            NavigateToConfiguration = navigateToConfiguration;
+            _navigateToConfiguration = navigateToConfiguration;
             LocalIp = server.LocalIp;
             Port = server.Port;
             Message = message;
@@ -46,7 +47,7 @@ namespace Joueur_Server.ViewModels
         {
             IsHosting = true;
             await _server.SendData();
-            NavigateToConfiguration();
+            _navigateToConfiguration();
         }
     }
 }

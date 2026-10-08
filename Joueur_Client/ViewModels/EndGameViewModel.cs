@@ -48,15 +48,15 @@ namespace Joueur_Client.ViewModels
         public ICommand RestartGameCommand { get; }
         public ICommand QuitGameCommand { get; }
 
-        public Action NavigateToConfiguration { get; }
-        public Action<string> NavigateToMainMenu { get; }
+        private readonly Action _navigateToConfiguration;
+        private readonly Action<string> _navigateToMainMenu;
 
         public EndGameViewModel(Client client, Data data, Action navigateToConfiguration, Action<string> navigateToMainMenu)
         {
             _client = client;
             LastVersionData = data;
-            NavigateToConfiguration = navigateToConfiguration;
-            NavigateToMainMenu = navigateToMainMenu;
+            _navigateToConfiguration = navigateToConfiguration;
+            _navigateToMainMenu = navigateToMainMenu;
 
             RestartGameCommand = new RelayCommand(RestartGame, () => !IsRestarting);
             QuitGameCommand = new RelayCommand(QuitGame, () => !IsQuitting);
@@ -69,11 +69,11 @@ namespace Joueur_Client.ViewModels
                 IsRestarting = true;
                 LastVersionData.PlayAgain = true;
                 await _client.SendData(LastVersionData);
-                NavigateToConfiguration();
+                _navigateToConfiguration();
             }
             catch (SocketException)
             {
-                NavigateToMainMenu("Connexion perdue avec le serveur");
+                _navigateToMainMenu("Connexion perdue avec le serveur");
             }
         }
 
@@ -85,11 +85,11 @@ namespace Joueur_Client.ViewModels
                 LastVersionData.PlayAgain = false;
                 await _client.SendData(LastVersionData);
                 _client.CloseConnection();
-                NavigateToMainMenu("");
+                _navigateToMainMenu("");
             }
             catch (SocketException)
             {
-                NavigateToMainMenu("Connexion perdue avec le serveur");
+                _navigateToMainMenu("Connexion perdue avec le serveur");
             }
         }
     }

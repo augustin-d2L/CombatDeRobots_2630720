@@ -15,16 +15,16 @@ namespace Joueur_Server.ViewModels
 
         public Data LastVersionData { get; set; }
 
-        public System.Action NavigateToConfiguration { get; }
-        public System.Action<string> NavigateToMainMenu { get; }
+        private readonly System.Action _navigateToConfiguration;
+        private readonly System.Action<string> _navigateToMainMenu;
 
 
         public EndGameViewModel(Server server, Data data, System.Action navigateToConfiguration, System.Action<string> navigateToMainMenu)
         {
             _server = server;
             LastVersionData = data;
-            NavigateToConfiguration = navigateToConfiguration;
-            NavigateToMainMenu = navigateToMainMenu;
+            _navigateToConfiguration = navigateToConfiguration;
+            _navigateToMainMenu = navigateToMainMenu;
 
             _ = ListenToClientChoice();
         }
@@ -35,16 +35,16 @@ namespace Joueur_Server.ViewModels
             {
                 LastVersionData = await _server.ReceiveData();
                 if (LastVersionData.PlayAgain)
-                    NavigateToConfiguration();
+                    _navigateToConfiguration();
                 if (!LastVersionData.PlayAgain)
                 {
                     _server.CloseConnection();
-                    NavigateToMainMenu("Le client à quitté la partie");//TODO : quand le client quitte la partie le serveur doit se remettre en attente.
+                    _navigateToMainMenu("Le client à quitté la partie");
                 }
             }
             catch (SocketException)
             {
-                NavigateToMainMenu("Connexion perdue avec le client");
+                _navigateToMainMenu("Connexion perdue avec le client");
             }
         }
     }

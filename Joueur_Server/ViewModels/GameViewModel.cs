@@ -79,7 +79,7 @@ namespace Joueur_Server.ViewModels
         public ICommand PlayTurnCommand { get; }
         public ICommand SelectActionCommand { get; }
 
-        public System.Action<Data> NavigateToEndGame { get; }
+        private readonly System.Action<Data> _navigateToEndGame;
         private readonly System.Action<string?> _navigateToMainMenu;
         private readonly Func<string, Task<int>> _askQuestion;
 
@@ -89,7 +89,7 @@ namespace Joueur_Server.ViewModels
             _server = server;
             _robotServer = robotServer;
             _robotClient = robotClient;
-            NavigateToEndGame = navigateToEndGame;
+            _navigateToEndGame = navigateToEndGame;
             _navigateToMainMenu = navigateToMainMenu;
             _askQuestion = askQuestion;
 
@@ -152,7 +152,7 @@ namespace Joueur_Server.ViewModels
                 if (LastVersionData.GameState != GameState.done) _ = ListenToOpponent();
                 else
                 {
-                    NavigateToEndGame(LastVersionData);
+                    _navigateToEndGame(LastVersionData);
                 }
             }
             catch (SocketException)
@@ -214,7 +214,7 @@ namespace Joueur_Server.ViewModels
                 IsTurnToPlay = true;
 
                 UpdateDisplay();
-                if (LastVersionData.GameState == GameState.done) NavigateToEndGame(LastVersionData);
+                if (LastVersionData.GameState == GameState.done) _navigateToEndGame(LastVersionData);
             }
             catch (SocketException)
             {
