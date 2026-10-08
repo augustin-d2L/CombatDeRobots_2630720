@@ -61,10 +61,10 @@ namespace Joueur_Server.Service
         public string OperateAction(ActionCombat? action, Robot player, Robot opponent)
         {
             string message = "";
+            Random random = new Random();
             switch (action)
             {
                 case ActionCombat.ATTACK:
-                    Random random = new Random();
                     if(random.Next(0, 100) >= GameConstants.ATTACK_CRITICAL_CHANCE)
                     {
                         Attack.Execute(player, opponent);
@@ -78,13 +78,23 @@ namespace Joueur_Server.Service
                         message = $"{player.Name} a fait ATTAQUE CRITIQUE sur {opponent.Name}";
                     }
                     break;
-                case ActionCombat.POWERFUL_ATTACK://TODO : ajouter la logique random d'echec
-                    PowerfulAttack.Execute(player, opponent);
-                    message = $"{player.Name} a fait ATTAQUE PUISSANTE sur {opponent.Name}";
+                case ActionCombat.POWERFUL_ATTACK:
+                    if(random.Next(0, 100) >= GameConstants.POWERFUL_ATTACK_FAIL_CHANCE)
+                    {
+                        PowerfulAttack.Execute(player, opponent);
+                        message = $"{player.Name} a fait ATTAQUE PUISSANTE sur {opponent.Name}";
+                    }
+                    else
+                        message = $"{player.Name} a fait ATTAQUE PUISSANTE mais a échoué";
                     break;
-                case ActionCombat.DEFENSE://TODO : ajouter la logique random d'echec
-                    Defense.Execute(player, opponent);
-                    message = $"{player.Name} a fait DEFENSE et a gagné de la défense bonus";
+                case ActionCombat.DEFENSE:
+                    if (random.Next(0, 100) >= GameConstants.DEFENSE_FAIL_CHANCE)
+                    {
+                        Defense.Execute(player, opponent);
+                        message = $"{player.Name} a fait DEFENSE et a gagné de la défense bonus";
+                    }
+                    else
+                        message = $"{player.Name} a fait DEFENSE mais a échoué pas de chance";
                     break;
                 case ActionCombat.RECHARGE:
                     Recharge.Execute(player, opponent);

@@ -10,8 +10,8 @@ using System.Windows.Input;
 
 namespace Joueur_Server.ViewModels
 {
-    internal class GameViewModel : BaseViewModel//TODO : garder une copie coter serveur et traiter le minumum d'infos venant du client
-    {//TODO : probleme au niveau des messages
+    internal class GameViewModel : BaseViewModel
+    {
         private readonly Server _server;
         private Robot _robotServer;
         private Robot _robotClient;
@@ -43,7 +43,7 @@ namespace Joueur_Server.ViewModels
         }
 
         private string? _selectedAction;
-        public string? SelectedAction// peut - être moyen de directement convertir ici
+        public string? SelectedAction
         {
             get => _selectedAction;
             private set
@@ -121,11 +121,13 @@ namespace Joueur_Server.ViewModels
                     string question = $"Résoudre le calcul suivant : {arithmeticExpression.equation}";
                     int answer = await _askQuestion(question);
                     bool success = answer == arithmeticExpression.answer;
-                    if(success)
+                    if (success)
                     {
                         if (!_server.Service.PerformTurn(LastVersionData, true))
                             LastVersionData.GameState = GameState.done;
                     }
+                    else
+                        LastVersionData.Message = $"{LastVersionData.RobotServer.Name} a échoué la défense.";
                 }
                 if(LastVersionData.Action != ActionCombat.DEFENSE)
                 {
@@ -138,6 +140,7 @@ namespace Joueur_Server.ViewModels
                     LastVersionData.Message = MessageToSend;
 
                 //envois de l'action faite au client
+                LastVersionData.ArithmeticExpression = null;
                 await _server.SendData(LastVersionData);
 
                 //mise a jour display et retour en attente
@@ -188,6 +191,8 @@ namespace Joueur_Server.ViewModels
                         if (!_server.Service.PerformTurn(LastVersionData, false))
                             LastVersionData.GameState = GameState.done;
                     }
+                    else
+                        LastVersionData.Message = $"{LastVersionData.RobotClient.Name} a échoué la défense.";
                 }
                 if(LastVersionData.Action != ActionCombat.DEFENSE)
                 {
@@ -200,6 +205,7 @@ namespace Joueur_Server.ViewModels
                 }
 
                 //retour avec l'action faite
+                LastVersionData.ArithmeticExpression = null;
                 await _server.SendData(LastVersionData);
 
                 //update display
