@@ -1,3 +1,4 @@
+ReadMe pas à jour
 # CombatDeRobots_2630720
 
 Application WPF pour maîtriser les sockets synchrones et la sérialisation/désérialisation de données dans le cadre du cours *Développement d'application Expert (420-E80-CH)*. L'application permet de se connecter à un autre joueur, de configurer un robot et de se battre en tour par tour.
